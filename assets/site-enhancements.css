@@ -1,6 +1,6 @@
 /* 
-   Satisfying Original Layout - Enforced Standard 2026-08-20
-   Visual: Upper White (#fff) Product area + Lower Light Gray (#f3f5f7) Info area.
+   LONGRICH Master Style Standard 2026-08-20
+   Visual: Enforced Upper White (#fff) Product area + Lower Light Gray (#f3f5f7) Info area.
 */
 
 :root {
@@ -9,122 +9,122 @@
     --product-subject-size: 84%;
 }
 
+/* Enforce satisfying layout across all grids */
 .productGrid, .featured, .grid, .cards {
     display: grid !important;
     gap: 32px !important;
+    align-items: stretch !important;
 }
 
-.productCard {
+.productCard, .card {
     display: flex !important;
     flex-direction: column !important;
     height: 100%;
-    background: var(--card-media-bg);
-    border-radius: 24px;
-    overflow: hidden;
-    border: 1px solid #e7ebf0;
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    background: var(--card-media-bg) !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+    border: 1px solid #e7ebf0 !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
     text-decoration: none !important;
 }
 
-.productCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.13);
+.productCard:hover, .card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.13) !important;
 }
 
-/* 1. Product Area - WHITE */
-.productMedia, .productVisual {
+/* 1. Product Area - MUST BE WHITE to blend with product images */
+.productMedia, .productVisual, .media {
     background: var(--card-media-bg) !important; 
-    height: 360px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    overflow: hidden;
+    height: 360px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 30px !important;
+    overflow: hidden !important;
 }
 
-.productMedia img, .productVisual img {
-    width: auto;
-    height: auto;
-    max-width: var(--product-subject-size);
-    max-height: var(--product-subject-size);
-    object-fit: contain;
+.productMedia img, .productVisual img, .media img {
+    width: auto !important;
+    height: auto !important;
+    max-width: var(--product-subject-size) !important;
+    max-height: var(--product-subject-size) !important;
+    object-fit: contain !important;
 }
 
-/* 2. Info Area - LIGHT GRAY */
-.productInfo {
+/* 2. Info Area - MUST BE LIGHT GRAY */
+.productInfo, .cardBody, .info {
     background: var(--card-info-bg) !important;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+    padding: 32px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
 }
 
-.productInfo .tag {
-    display: block;
-    font-size: 12px;
-    font-weight: 800;
-    color: #0b63f6;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    letter-spacing: 1px;
+.productInfo .tag, .tag {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    color: #0b63f6 !important;
+    text-transform: uppercase !important;
+    margin-bottom: 12px !important;
+    letter-spacing: 1px !important;
 }
 
-.productInfo h3 {
-    font-size: 26px;
-    line-height: 1.1;
-    letter-spacing: -0.8px;
-    margin: 0 0 16px;
-    color: #0f172a;
-    min-height: 2.2em;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+.productInfo h3, .card h3 {
+    font-size: 26px !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.8px !important;
+    margin: 0 0 16px !important;
+    color: #0f172a !important;
+    min-height: 2.2em !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
 }
 
-.productInfo p {
-    font-size: 15px;
-    color: #5f6b7a;
-    margin: 0 0 20px;
-    line-height: 1.5;
-    min-height: 45px;
+.productInfo p, .card p {
+    font-size: 15px !important;
+    color: #5f6b7a !important;
+    margin: 0 0 20px !important;
+    line-height: 1.5 !important;
+    min-height: 45px !important;
 }
 
 /* 3. Statline - Plain bold text, 24px gap */
 .statline, .specs {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 24px;
-    margin-top: auto;
-    flex-wrap: wrap;
+    display: flex !important;
+    gap: 24px !important;
+    margin-bottom: 24px !important;
+    margin-top: auto !important;
+    flex-wrap: wrap !important;
 }
 
 .statline span, .specs .spec {
-    font-size: 13px;
-    font-weight: 800;
-    color: #0f172a;
-    text-transform: uppercase;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    text-transform: uppercase !important;
     background: none !important;
     padding: 0 !important;
     border-radius: 0 !important;
 }
 
 /* 4. Action Link - Blue Bold with Arrow */
-.viewLink, .productCardCta {
-    font-size: 15px;
-    font-weight: 800;
-    color: #0b63f6;
+.viewLink, .productCardCta, .btn-link {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    color: #0b63f6 !important;
     text-decoration: none !important;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: inline-flex !important;
+    align-items: center !important;
 }
 
-.viewLink:after, .productCardCta:after {
-    content: " →";
-    transition: transform 0.2s;
+.viewLink:after, .productCardCta:after, .btn-link:after {
+    content: " →" !important;
 }
 
-.viewLink:hover:after, .productCardCta:hover:after {
-    transform: translateX(4px);
-}
+/* Hero and layout specific alignment */
+.heroVisual { background: transparent !important; }
+.heroProduct.tus { width: 255px; filter: drop-shadow(0 18px 26px rgba(23,40,70,0.12)); }
