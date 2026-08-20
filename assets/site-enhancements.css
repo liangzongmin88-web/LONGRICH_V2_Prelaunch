@@ -1,136 +1,53 @@
-/* 
-   Unified Product Card Styling - Standard 2026-08-20
-   Strictly following the "Satisfying Original" version.
-*/
+/* Shared navigation and interaction refinements. */
+:root{--product-subject-size:84%}
+.heroProduct.nt011{right:190px;top:34px;z-index:4}
+.heroProduct.nt009{right:0;top:176px;z-index:5}
+.heroProduct.tus{width:255px;right:220px;bottom:18px;z-index:1;filter:drop-shadow(0 18px 26px rgba(23,40,70,.12))}
+#featured .productMedia{background:#fff}
+#featured .productInfo{background:#f3f5f7}
+#featured .productInfo h3{min-height:2.24em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.productCard .productMedia,.productCard .productVisual,.productCard .productPic,.product .pic,.card .media{padding:0}
+.productCard .productMedia img,.productCard .productVisual img,.productCard .productPic img,.product .pic img,.card .media img{width:var(--product-subject-size);height:var(--product-subject-size);max-width:var(--product-subject-size);max-height:var(--product-subject-size);object-fit:contain;object-position:center}
+.heroVisual:has(img[src*="ECS-BS019-transparent"]){background:#fff}
+.mailtoForm button.btn{font:inherit;cursor:pointer}
+.whatsappDirect{display:block;margin-top:10px;color:#0b63f6!important;font-size:13px;font-weight:850;text-decoration:none}
+.contactTrustHead{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:30px}
+.contactTrustHead h2{font-size:42px;letter-spacing:-1.7px;margin:0}
+.contactTrustHead p{max-width:560px;color:var(--muted);margin:0}
+.mobileMenuToggle{display:none;width:44px;height:44px;border:1px solid #d9e0e8;border-radius:10px;background:#fff;color:#0c2f63;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.mobileMenuToggle span,.mobileMenuToggle:before,.mobileMenuToggle:after{content:"";display:block;width:20px;height:2px;background:currentColor;transition:transform .2s ease,opacity .2s ease}
+.mobileMenuToggle span{margin:5px 0}
+.nav.menuOpen .mobileMenuToggle:before{transform:translateY(7px) rotate(45deg)}
+.nav.menuOpen .mobileMenuToggle span{opacity:0}
+.nav.menuOpen .mobileMenuToggle:after{transform:translateY(-7px) rotate(-45deg)}
+.productCard[role="link"]{position:relative;display:flex;flex-direction:column;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease}
+.productCard[role="link"]:hover,.productCard[role="link"]:focus-visible{transform:translateY(-5px);box-shadow:0 18px 42px rgba(15,23,42,.13);outline:none}
+#featured .productCard .productInfo{display:flex;flex:1;flex-direction:column}
+#featured .productCard .statline{margin-bottom:0}
+.productCardCta{display:inline-flex;align-self:flex-start;margin-top:auto;padding-top:18px;color:#0b63f6;font-size:13px;font-weight:850;text-decoration:none}
+.productCardExtra:not(.isRevealed){display:none}
+.featuredActions{display:flex;justify-content:center;margin-top:34px}
+.viewAllProducts{appearance:none;border:1px solid #0f172a;background:#fff;color:#0f172a;border-radius:11px;padding:13px 22px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.viewAllProducts:hover{background:#0f172a;color:#fff}
 
-:root {
-    --product-subject-size: 84%;
-    --card-info-bg: #f3f5f7;
-    --card-media-bg: #fff;
+@media(max-width:980px){
+  .heroProduct.nt011{right:165px;top:32px}
+  .heroProduct.nt009{right:10px;top:155px}
+  .heroProduct.tus{width:220px;right:180px;bottom:24px}
+  .nav.mobileNavReady{position:relative}
+  .mobileMenuToggle{display:block;flex:0 0 auto}
+  .nav.mobileNavReady .links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:14px;background:#fff;border:1px solid #e7ebf0;border-radius:0 0 16px 16px;box-shadow:0 18px 36px rgba(15,23,42,.12);flex-direction:column;align-items:stretch;gap:0}
+  .nav.mobileNavReady.menuOpen .links{display:flex}
+  .nav.mobileNavReady .links a{display:block;padding:12px 14px;border-radius:8px}
+  .nav.mobileNavReady .links a:hover{background:#f5f7fa}
+  .nav.mobileNavReady .links .cta{text-align:center;margin-top:6px}
 }
 
-.productGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-    align-items: stretch;
+@media(max-width:640px){
+  .heroProduct.nt011{width:205px;right:100px;top:24px}
+  .heroProduct.nt009{width:155px;right:0;top:132px}
+  .heroProduct.tus{width:165px;right:125px;bottom:24px}
+  .contactTrustHead{display:block}
+  .contactTrustHead h2{font-size:36px}
+  .contactTrustHead p{margin-top:12px;max-width:none}
 }
-
-.productCard {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100%;
-    background: var(--card-media-bg);
-    border-radius: 24px;
-    overflow: hidden;
-    border: 1px solid #e7ebf0;
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-    text-decoration: none;
-}
-
-.productCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.13);
-}
-
-/* 1. Product Area - MUST BE WHITE to blend with product images */
-.productMedia, .productVisual {
-    background: var(--card-media-bg) !important; 
-    height: 360px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    overflow: hidden;
-}
-
-.productMedia img, .productVisual img {
-    width: auto;
-    height: auto;
-    max-width: var(--product-subject-size);
-    max-height: var(--product-subject-size);
-    object-fit: contain;
-}
-
-/* 2. Info Area - MUST BE LIGHT GRAY */
-.productInfo {
-    background: var(--card-info-bg) !important;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.productInfo .tag {
-    font-size: 12px;
-    font-weight: 800;
-    color: #0b63f6;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    letter-spacing: 1px;
-    display: block;
-}
-
-.productInfo h3 {
-    font-size: 26px;
-    line-height: 1.1;
-    letter-spacing: -0.8px;
-    margin: 0 0 16px;
-    color: #0f172a;
-    min-height: 2.2em;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.productInfo p {
-    font-size: 15px;
-    color: #5f6b7a;
-    margin: 0 0 20px;
-    line-height: 1.5;
-    min-height: 45px;
-}
-
-/* 3. Statline - Plain bold text, 24px gap */
-.statline, .specs {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 24px;
-    margin-top: auto;
-    flex-wrap: wrap;
-}
-
-.statline span, .specs .spec {
-    font-size: 13px;
-    font-weight: 800;
-    color: #0f172a;
-    text-transform: uppercase;
-    background: none !important;
-    padding: 0 !important;
-}
-
-/* 4. Action Link - Blue Bold */
-.viewLink, .productCardCta {
-    font-size: 15px;
-    font-weight: 800;
-    color: #0b63f6;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.viewLink:after, .productCardCta:after {
-    content: " →";
-    transition: transform 0.2s;
-}
-
-.viewLink:hover:after, .productCardCta:hover:after {
-    transform: translateX(4px);
-}
-
-/* Hero adjustments for product positions */
-.heroProduct.nt011 { right: 190px; top: 34px; z-index: 4; }
-.heroProduct.nt009 { right: 0; top: 176px; z-index: 5; }
-.heroProduct.tus { width: 255px; right: 220px; bottom: 18px; z-index: 1; filter: drop-shadow(0 18px 26px rgba(23,40,70,0.12)); }
