@@ -1,5 +1,9 @@
 {
-  "html_pages": 18,
-  "internal_links_checked": 263,
-  "missing_internal_links": []
+  "version": "V5.1",
+  "html_pages": 28,
+  "internal_links_and_images_checked": 605,
+  "missing_internal_references": [],
+  "new_model": "WPG05",
+  "source_xlsx": "WPG05.xlsx",
+  "locked_image": "assets/images/products/WPG05.png"
 }
