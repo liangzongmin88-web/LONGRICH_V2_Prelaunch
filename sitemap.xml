@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://longrichpower.com/</loc></url>
   <url><loc>https://longrichpower.com/about-us.html</loc></url>
   <url><loc>https://longrichpower.com/contact-us.html</loc></url>
+  <url><loc>https://longrichpower.com/ecs-aus03.html</loc></url>
+  <url><loc>https://longrichpower.com/ecs-aus05.html</loc></url>
   <url><loc>https://longrichpower.com/ecs-bs019.html</loc></url>
   <url><loc>https://longrichpower.com/ecs-eu010.html</loc></url>
+  <url><loc>https://longrichpower.com/ecs-eu016.html</loc></url>
+  <url><loc>https://longrichpower.com/ecs-us013.html</loc></url>
   <url><loc>https://longrichpower.com/ecs-us019.html</loc></url>
-  <url><loc>https://longrichpower.com/</loc></url>
   <url><loc>https://longrichpower.com/manufacturing.html</loc></url>
   <url><loc>https://longrichpower.com/nt009-all.html</loc></url>
   <url><loc>https://longrichpower.com/nt009-aus.html</loc></url>
@@ -24,7 +28,20 @@
   <url><loc>https://longrichpower.com/terms.html</loc></url>
   <url><loc>https://longrichpower.com/travel-plug-adapters.html</loc></url>
   <url><loc>https://longrichpower.com/tus-11.html</loc></url>
+  <url><loc>https://longrichpower.com/tus-13.html</loc></url>
+  <url><loc>https://longrichpower.com/tus-2f.html</loc></url>
+  <url><loc>https://longrichpower.com/tus-4.html</loc></url>
+  <url><loc>https://longrichpower.com/tus-8.html</loc></url>
+  <url><loc>https://longrichpower.com/tus-8b.html</loc></url>
+  <url><loc>https://longrichpower.com/tus-9.html</loc></url>
   <url><loc>https://longrichpower.com/universal-travel-adapters.html</loc></url>
   <url><loc>https://longrichpower.com/voltage-converters.html</loc></url>
+  <url><loc>https://longrichpower.com/wpg-aus01.html</loc></url>
+  <url><loc>https://longrichpower.com/wpg-aus02.html</loc></url>
+  <url><loc>https://longrichpower.com/wpg-eu030-7.html</loc></url>
+  <url><loc>https://longrichpower.com/wpg-eu032-7.html</loc></url>
+  <url><loc>https://longrichpower.com/wpg-us012-7.html</loc></url>
+  <url><loc>https://longrichpower.com/wpg-us012-9c.html</loc></url>
+  <url><loc>https://longrichpower.com/wpg01.html</loc></url>
   <url><loc>https://longrichpower.com/wpg05.html</loc></url>
 </urlset>

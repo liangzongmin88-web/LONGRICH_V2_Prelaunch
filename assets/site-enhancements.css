@@ -1,130 +1,53 @@
-/* 
-   LONGRICH Master Style Standard 2026-08-20
-   Visual: Enforced Upper White (#fff) Product area + Lower Light Gray (#f3f5f7) Info area.
-*/
+/* Shared navigation and interaction refinements. */
+:root{--product-subject-size:84%}
+.heroProduct.nt011{right:190px;top:34px;z-index:4}
+.heroProduct.nt009{right:0;top:176px;z-index:5}
+.heroProduct.tus{width:255px;right:220px;bottom:18px;z-index:1;filter:drop-shadow(0 18px 26px rgba(23,40,70,.12))}
+#featured .productMedia{background:#fff}
+#featured .productInfo{background:#f3f5f7}
+#featured .productInfo h3{min-height:2.24em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.productCard .productMedia,.productCard .productVisual,.productCard .productPic,.product .pic,.card .media{padding:0}
+.productCard .productMedia img,.productCard .productVisual img,.productCard .productPic img,.product .pic img,.card .media img{width:var(--product-subject-size);height:var(--product-subject-size);max-width:var(--product-subject-size);max-height:var(--product-subject-size);object-fit:contain;object-position:center}
+.heroVisual:has(img[src*="ECS-BS019-transparent"]){background:#fff}
+.mailtoForm button.btn{font:inherit;cursor:pointer}
+.whatsappDirect{display:block;margin-top:10px;color:#0b63f6!important;font-size:13px;font-weight:850;text-decoration:none}
+.contactTrustHead{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:30px}
+.contactTrustHead h2{font-size:42px;letter-spacing:-1.7px;margin:0}
+.contactTrustHead p{max-width:560px;color:var(--muted);margin:0}
+.mobileMenuToggle{display:none;width:44px;height:44px;border:1px solid #d9e0e8;border-radius:10px;background:#fff;color:#0c2f63;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.mobileMenuToggle span,.mobileMenuToggle:before,.mobileMenuToggle:after{content:"";display:block;width:20px;height:2px;background:currentColor;transition:transform .2s ease,opacity .2s ease}
+.mobileMenuToggle span{margin:5px 0}
+.nav.menuOpen .mobileMenuToggle:before{transform:translateY(7px) rotate(45deg)}
+.nav.menuOpen .mobileMenuToggle span{opacity:0}
+.nav.menuOpen .mobileMenuToggle:after{transform:translateY(-7px) rotate(-45deg)}
+.productCard[role="link"]{position:relative;display:flex;flex-direction:column;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease}
+.productCard[role="link"]:hover,.productCard[role="link"]:focus-visible{transform:translateY(-5px);box-shadow:0 18px 42px rgba(15,23,42,.13);outline:none}
+#featured .productCard .productInfo{display:flex;flex:1;flex-direction:column}
+#featured .productCard .statline{margin-bottom:0}
+.productCardCta{display:inline-flex;align-self:flex-start;margin-top:auto;padding-top:18px;color:#0b63f6;font-size:13px;font-weight:850;text-decoration:none}
+.productCardExtra:not(.isRevealed){display:none}
+.featuredActions{display:flex;justify-content:center;margin-top:34px}
+.viewAllProducts{appearance:none;border:1px solid #0f172a;background:#fff;color:#0f172a;border-radius:11px;padding:13px 22px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.viewAllProducts:hover{background:#0f172a;color:#fff}
 
-:root {
-    --card-media-bg: #ffffff;
-    --card-info-bg: #f3f5f7;
-    --product-subject-size: 84%;
+@media(max-width:980px){
+  .heroProduct.nt011{right:165px;top:32px}
+  .heroProduct.nt009{right:10px;top:155px}
+  .heroProduct.tus{width:220px;right:180px;bottom:24px}
+  .nav.mobileNavReady{position:relative}
+  .mobileMenuToggle{display:block;flex:0 0 auto}
+  .nav.mobileNavReady .links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:14px;background:#fff;border:1px solid #e7ebf0;border-radius:0 0 16px 16px;box-shadow:0 18px 36px rgba(15,23,42,.12);flex-direction:column;align-items:stretch;gap:0}
+  .nav.mobileNavReady.menuOpen .links{display:flex}
+  .nav.mobileNavReady .links a{display:block;padding:12px 14px;border-radius:8px}
+  .nav.mobileNavReady .links a:hover{background:#f5f7fa}
+  .nav.mobileNavReady .links .cta{text-align:center;margin-top:6px}
 }
 
-/* Enforce satisfying layout across all grids */
-.productGrid, .featured, .grid, .cards {
-    display: grid !important;
-    gap: 32px !important;
-    align-items: stretch !important;
+@media(max-width:640px){
+  .heroProduct.nt011{width:205px;right:100px;top:24px}
+  .heroProduct.nt009{width:155px;right:0;top:132px}
+  .heroProduct.tus{width:165px;right:125px;bottom:24px}
+  .contactTrustHead{display:block}
+  .contactTrustHead h2{font-size:36px}
+  .contactTrustHead p{margin-top:12px;max-width:none}
 }
-
-.productCard, .card {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100%;
-    background: var(--card-media-bg) !important;
-    border-radius: 24px !important;
-    overflow: hidden !important;
-    border: 1px solid #e7ebf0 !important;
-    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
-    text-decoration: none !important;
-}
-
-.productCard:hover, .card:hover {
-    transform: translateY(-5px) !important;
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.13) !important;
-}
-
-/* 1. Product Area - MUST BE WHITE to blend with product images */
-.productMedia, .productVisual, .media {
-    background: var(--card-media-bg) !important; 
-    height: 360px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 30px !important;
-    overflow: hidden !important;
-}
-
-.productMedia img, .productVisual img, .media img {
-    width: auto !important;
-    height: auto !important;
-    max-width: var(--product-subject-size) !important;
-    max-height: var(--product-subject-size) !important;
-    object-fit: contain !important;
-}
-
-/* 2. Info Area - MUST BE LIGHT GRAY */
-.productInfo, .cardBody, .info {
-    background: var(--card-info-bg) !important;
-    padding: 32px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 !important;
-}
-
-.productInfo .tag, .tag {
-    display: block !important;
-    font-size: 12px !important;
-    font-weight: 800 !important;
-    color: #0b63f6 !important;
-    text-transform: uppercase !important;
-    margin-bottom: 12px !important;
-    letter-spacing: 1px !important;
-}
-
-.productInfo h3, .card h3 {
-    font-size: 26px !important;
-    line-height: 1.1 !important;
-    letter-spacing: -0.8px !important;
-    margin: 0 0 16px !important;
-    color: #0f172a !important;
-    min-height: 2.2em !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-}
-
-.productInfo p, .card p {
-    font-size: 15px !important;
-    color: #5f6b7a !important;
-    margin: 0 0 20px !important;
-    line-height: 1.5 !important;
-    min-height: 45px !important;
-}
-
-/* 3. Statline - Plain bold text, 24px gap */
-.statline, .specs {
-    display: flex !important;
-    gap: 24px !important;
-    margin-bottom: 24px !important;
-    margin-top: auto !important;
-    flex-wrap: wrap !important;
-}
-
-.statline span, .specs .spec {
-    font-size: 13px !important;
-    font-weight: 800 !important;
-    color: #0f172a !important;
-    text-transform: uppercase !important;
-    background: none !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-}
-
-/* 4. Action Link - Blue Bold with Arrow */
-.viewLink, .productCardCta, .btn-link {
-    font-size: 15px !important;
-    font-weight: 800 !important;
-    color: #0b63f6 !important;
-    text-decoration: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
-}
-
-.viewLink:after, .productCardCta:after, .btn-link:after {
-    content: " →" !important;
-}
-
-/* Hero and layout specific alignment */
-.heroVisual { background: transparent !important; }
-.heroProduct.tus { width: 255px; filter: drop-shadow(0 18px 26px rgba(23,40,70,0.12)); }

@@ -3,7 +3,7 @@
 ## Included
 - Core homepage and B2B company pages
 - Product category pages
-- Locked product pages for NT011-US, NT009-ALL, NT009-AUS, NT009-EU, TUS-11, ECS-BS019, ECS-EU010 and ECS-US019
+- 30 locked product models across four product categories
 - Contact and RFQ pages
 - 404, Privacy Policy and Terms of Use placeholders
 - robots.txt
@@ -31,3 +31,10 @@
 - NT011-US specifications synchronized to NT011-US.xlsx.
 
 - WPG05 US Wall Outlet (locked image and product page)
+
+## V6.0 product catalog update
+- Expanded the website to 30 product models and 45 HTML pages.
+- Added 17 product detail pages from the approved product images and XLSX specifications.
+- Organized products into Universal Travel Adapters, Travel Plug Adapters, Voltage Converters, and Power Strips & Wall Outlets.
+- Prioritized US-market configurations within each relevant category.
+- Updated the Products page, category pages, homepage highlights, sitemap, and product-image lock manifest.

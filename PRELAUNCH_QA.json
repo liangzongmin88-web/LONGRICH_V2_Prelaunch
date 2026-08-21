@@ -1,9 +1,10 @@
 {
-  "version": "V5.1",
-  "html_pages": 28,
-  "internal_links_and_images_checked": 605,
+  "version": "V6.0-30-PRODUCTS-US-PRIORITY",
+  "html_pages": 45,
+  "internal_links_and_images_checked": 658,
   "missing_internal_references": [],
-  "new_model": "WPG05",
-  "source_xlsx": "WPG05.xlsx",
-  "locked_image": "assets/images/products/WPG05.png"
+  "product_models": 30,
+  "sitemap_urls": 44,
+  "new_detail_pages": 17,
+  "ordering_policy": "US-market configurations first within each category"
 }

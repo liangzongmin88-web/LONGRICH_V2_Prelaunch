@@ -54,9 +54,26 @@
     'ECS-BS019': 'ecs-bs019.html',
     'ECS-EU010': 'ecs-eu010.html',
     'ECS-US019': 'ecs-us019.html',
-    'WPG05': 'wpg05.html'
+    'WPG05': 'wpg05.html',
+    'WPG-US012-7': 'wpg-us012-7.html',
+    'WPG-US012-9C': 'wpg-us012-9c.html',
+    'WPG-EU030-7': 'wpg-eu030-7.html',
+    'WPG-EU032-7': 'wpg-eu032-7.html',
+    'WPG-AUS01': 'wpg-aus01.html',
+    'WPG-AUS02': 'wpg-aus02.html',
+    'TUS-9': 'tus-9.html',
+    'TUS-4': 'tus-4.html',
+    'TUS-2F': 'tus-2f.html',
+    'TUS-8B': 'tus-8b.html',
+    'TUS-13': 'tus-13.html',
+    'TUS-8': 'tus-8.html',
+    'WPG01': 'wpg01.html',
+    'ECS-US013': 'ecs-us013.html',
+    'ECS-EU016': 'ecs-eu016.html',
+    'ECS-AUS03': 'ecs-aus03.html',
+    'ECS-AUS05': 'ecs-aus05.html'
   };
-  const coreProducts = new Set(['NT011-US', 'NT011-ALL', 'NT009-ALL', 'NT010', 'TUS-11', 'ECS-EU010']);
+  const coreProducts = new Set(Object.keys(productLinks));
   const cards = [...document.querySelectorAll('#featured .productCard')];
   cards.forEach(card => {
     const model = card.querySelector('img')?.alt;
@@ -67,7 +84,7 @@
     card.setAttribute('aria-label', `View ${model} product details`);
     if (!coreProducts.has(model)) card.classList.add('productCardExtra');
     const info = card.querySelector('.productInfo');
-    if (info && !info.querySelector('.productCardCta')) {
+    if (info && !info.querySelector('a')) {
       const cta = document.createElement('a');
       cta.className = 'productCardCta';
       cta.href = href;
