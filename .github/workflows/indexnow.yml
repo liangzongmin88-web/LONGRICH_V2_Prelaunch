@@ -18,7 +18,7 @@ jobs:
       - name: Wait for Vercel deployment
         run: |
           for attempt in {1..18}; do
-            if curl --fail --silent --show-error \
+            if curl --fail --location --silent --show-error \
               https://longrichpower.com/39a43fe1e311aa1ee6bd17ed67a6bac3.txt \
               | grep --quiet '^39a43fe1e311aa1ee6bd17ed67a6bac3$'; then
               exit 0
