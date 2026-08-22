@@ -1,4 +1,38 @@
 (() => {
+  const GA4_MEASUREMENT_ID = 'G-09MR5V2JWH';
+  const CLARITY_PROJECT_ID = 'y68zlggfxt';
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtag() {
+    window.dataLayer.push(arguments);
+  };
+  window.gtag('js', new Date());
+  window.gtag('config', GA4_MEASUREMENT_ID, {
+    anonymize_ip: true,
+    transport_type: 'beacon'
+  });
+
+  const googleTag = document.createElement('script');
+  googleTag.async = true;
+  googleTag.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA4_MEASUREMENT_ID)}`;
+  document.head.append(googleTag);
+
+  window.clarity = window.clarity || function clarity() {
+    (window.clarity.q = window.clarity.q || []).push(arguments);
+  };
+  const clarityTag = document.createElement('script');
+  clarityTag.async = true;
+  clarityTag.src = `https://www.clarity.ms/tag/${encodeURIComponent(CLARITY_PROJECT_ID)}`;
+  document.head.append(clarityTag);
+
+  const track = (eventName, params = {}) => {
+    window.gtag('event', eventName, params);
+  };
+
+  if (/\/request-a-quote\.html$/.test(window.location.pathname)) {
+    track('generate_lead_view', { page_location: window.location.href });
+  }
+
   const nav = document.querySelector('.nav');
   let links = nav?.querySelector('.links');
   if (nav && !links) {
@@ -133,6 +167,12 @@
       }
       const subject = form.dataset.subject || 'LONGRICH Website Inquiry';
       const href = `mailto:sales7@cnlongrich.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n\n'))}`;
+      track('generate_lead', {
+        method: 'rfq_email',
+        product_category: String(data.get('Product Category') || ''),
+        estimated_quantity: String(data.get('Estimated Quantity') || ''),
+        project_type: String(data.get('Project Type') || '')
+      });
       window.location.href = href;
     });
   });
@@ -144,6 +184,15 @@
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
     }
+    link.addEventListener('click', () => {
+      if (link.href.startsWith('mailto:')) {
+        track('contact_click', { method: 'email', link_url: link.href.split('?')[0] });
+      } else if (link.href.startsWith(whatsappUrl)) {
+        track('contact_click', { method: 'whatsapp', link_url: whatsappUrl });
+      } else if (/request-a-quote\.html(?:$|[?#])/.test(link.href)) {
+        track('begin_lead', { method: 'rfq_page', link_url: link.href });
+      }
+    });
   });
   document.querySelectorAll('img[alt*="WhatsApp" i]').forEach(image => {
     const panel = image.closest('.qr');
@@ -154,6 +203,9 @@
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Open WhatsApp Chat →';
+    link.addEventListener('click', () => {
+      track('contact_click', { method: 'whatsapp', link_url: whatsappUrl });
+    });
     panel.append(link);
   });
 })();

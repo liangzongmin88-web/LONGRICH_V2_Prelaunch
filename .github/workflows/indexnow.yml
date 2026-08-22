@@ -1,0 +1,45 @@
+name: Submit URLs to IndexNow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+
+      - name: Wait for Vercel deployment
+        run: |
+          for attempt in {1..18}; do
+            if curl --fail --silent --show-error \
+              https://longrichpower.com/39a43fe1e311aa1ee6bd17ed67a6bac3.txt \
+              | grep --quiet '^39a43fe1e311aa1ee6bd17ed67a6bac3$'; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'The production deployment did not expose the IndexNow key in time.' >&2
+          exit 1
+
+      - name: Submit sitemap URLs
+        shell: bash
+        run: |
+          mapfile -t urls < <(grep -oP '(?<=<loc>)[^<]+' sitemap.xml)
+          payload=$(jq -n \
+            --arg host 'longrichpower.com' \
+            --arg key '39a43fe1e311aa1ee6bd17ed67a6bac3' \
+            --arg keyLocation 'https://longrichpower.com/39a43fe1e311aa1ee6bd17ed67a6bac3.txt' \
+            --argjson urlList "$(printf '%s\n' "${urls[@]}" | jq -R . | jq -s .)" \
+            '{host:$host,key:$key,keyLocation:$keyLocation,urlList:$urlList}')
+          curl --fail-with-body \
+            --request POST \
+            --header 'Content-Type: application/json; charset=utf-8' \
+            --data "$payload" \
+            https://api.indexnow.org/indexnow
