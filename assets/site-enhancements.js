@@ -32,12 +32,13 @@
     window.addEventListener(eventName, loadAnalytics, { once: true, passive: true });
   });
   if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(loadAnalytics, { timeout: 2500 });
+    window.requestIdleCallback(loadAnalytics, { timeout: 1500 });
   } else {
-    window.setTimeout(loadAnalytics, 2000);
+    window.setTimeout(loadAnalytics, 1000);
   }
 
   const track = (eventName, params = {}) => {
+    loadAnalytics();
     window.gtag('event', eventName, params);
   };
 
@@ -194,9 +195,9 @@
       const href = `mailto:sales7@cnlongrich.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n\n'))}`;
       track('generate_lead', {
         method: 'rfq_email',
-        product_category: String(data.get('Product Category') || ''),
+        product_model: String(data.get('Product / Model') || ''),
+        target_market: String(data.get('Target Market') || ''),
         estimated_quantity: String(data.get('Estimated Quantity') || ''),
-        project_type: String(data.get('Project Type') || '')
       });
       window.location.href = href;
     });
