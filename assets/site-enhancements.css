@@ -29,8 +29,15 @@
 .featuredActions{display:flex;justify-content:center;margin-top:34px}
 .viewAllProducts{appearance:none;border:1px solid #0f172a;background:#fff;color:#0f172a;border-radius:11px;padding:13px 22px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
 .viewAllProducts:hover{background:#0f172a;color:#fff}
+.procurementPanel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.procurementCard{border:1px solid #e2e8f0;border-radius:18px;background:#fff;padding:22px}
+.procurementCard h3{margin:0 0 8px;font-size:18px}
+.procurementCard p,.procurementCard li{color:#667085;font-size:14px}
+.procurementCard ul{margin:0;padding-left:18px}
+.buyerActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
 
 @media(max-width:980px){
+  .procurementPanel{grid-template-columns:1fr}
   .heroProduct.nt011{right:165px;top:32px}
   .heroProduct.nt009{right:10px;top:155px}
   .heroProduct.tus{width:220px;right:180px;bottom:24px}
