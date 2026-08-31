@@ -12,18 +12,30 @@
     transport_type: 'beacon'
   });
 
-  const googleTag = document.createElement('script');
-  googleTag.async = true;
-  googleTag.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA4_MEASUREMENT_ID)}`;
-  document.head.append(googleTag);
-
   window.clarity = window.clarity || function clarity() {
     (window.clarity.q = window.clarity.q || []).push(arguments);
   };
-  const clarityTag = document.createElement('script');
-  clarityTag.async = true;
-  clarityTag.src = `https://www.clarity.ms/tag/${encodeURIComponent(CLARITY_PROJECT_ID)}`;
-  document.head.append(clarityTag);
+  let analyticsLoaded = false;
+  const loadAnalytics = () => {
+    if (analyticsLoaded) return;
+    analyticsLoaded = true;
+    const googleTag = document.createElement('script');
+    googleTag.async = true;
+    googleTag.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA4_MEASUREMENT_ID)}`;
+    document.head.append(googleTag);
+    const clarityTag = document.createElement('script');
+    clarityTag.async = true;
+    clarityTag.src = `https://www.clarity.ms/tag/${encodeURIComponent(CLARITY_PROJECT_ID)}`;
+    document.head.append(clarityTag);
+  };
+  ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
+    window.addEventListener(eventName, loadAnalytics, { once: true, passive: true });
+  });
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(loadAnalytics, { timeout: 2500 });
+  } else {
+    window.setTimeout(loadAnalytics, 2000);
+  }
 
   const track = (eventName, params = {}) => {
     window.gtag('event', eventName, params);
@@ -176,6 +188,16 @@
       window.location.href = href;
     });
   });
+
+  const requestedModel = new URLSearchParams(window.location.search).get('model')?.trim();
+  if (requestedModel) {
+    document.querySelectorAll('[name="Product / Model"]').forEach(input => {
+      if (!input.value) input.value = requestedModel;
+    });
+    document.querySelectorAll('[name="Project Details"], [name="Message"]').forEach(input => {
+      if (!input.value) input.value = `I am interested in ${requestedModel}. `;
+    });
+  }
 
   const whatsappUrl = 'https://wa.me/8618820000007';
   document.querySelectorAll('a').forEach(link => {
