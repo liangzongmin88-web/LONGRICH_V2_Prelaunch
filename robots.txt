@@ -10,4 +10,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://longrichpower.com/sitemap.xml
+Sitemap: https://www.longrichpower.com/sitemap.xml
