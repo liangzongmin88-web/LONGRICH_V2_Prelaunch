@@ -51,10 +51,23 @@
     [...nav.children].filter(el => el.matches('a') && !el.querySelector('.brand')).forEach(el => el.remove());
     links = document.createElement('nav');
     links.className = 'links';
-    links.innerHTML = '<a href="products.html">Products</a><a href="oem-odm.html">OEM / ODM</a><a href="manufacturing.html">Manufacturing</a><a href="quality-testing.html">Quality & Testing</a><a href="about-us.html">About Us</a><a href="contact-us.html">Contact</a><a class="cta" href="request-a-quote.html">Request a Quote</a>';
+    links.innerHTML = '<a href="products.html">Products</a><a href="oem-odm.html">OEM / ODM</a><a href="manufacturing.html">Manufacturing</a><a href="quality-testing.html">Quality & Testing</a><a href="engineering-resources.html">Engineering Resources</a><a href="about-us.html">About Us</a><a href="contact-us.html">Contact</a><a class="cta" href="request-a-quote.html">Request a Quote</a>';
     nav.append(links);
   }
   if (nav && links) {
+    links.id ||= 'primary-navigation';
+    if (!links.querySelector('a[href="engineering-resources.html"]')) {
+      const resourceLink = document.createElement('a');
+      resourceLink.href = 'engineering-resources.html';
+      resourceLink.textContent = 'Engineering Resources';
+      const qualityLink = links.querySelector('a[href="quality-testing.html"]');
+      if (qualityLink) qualityLink.after(resourceLink);
+      else {
+        const ctaLink = links.querySelector('.cta');
+        if (ctaLink) links.insertBefore(resourceLink, ctaLink);
+        else links.append(resourceLink);
+      }
+    }
     links.id ||= 'primary-navigation';
     const button = document.createElement('button');
     button.className = 'mobileMenuToggle';
