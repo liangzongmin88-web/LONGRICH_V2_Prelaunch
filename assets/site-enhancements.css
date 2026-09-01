@@ -1,8 +1,11 @@
 /* Shared navigation and interaction refinements. */
 :root{--product-subject-size:84%}
-.heroProduct.nt011{right:190px;top:34px;z-index:4}
-.heroProduct.nt009{right:0;top:176px;z-index:5}
-.heroProduct.tus{width:255px;right:220px;bottom:18px;z-index:1;filter:drop-shadow(0 18px 26px rgba(23,40,70,.12))}
+.heroVisual{min-height:540px;overflow:hidden}
+.heroHalo{width:450px;height:450px;left:52%;top:49%;transform:translate(-50%,-50%)}
+.heroProduct{height:auto;max-width:none;filter:drop-shadow(0 22px 30px rgba(23,40,70,.14))}
+.heroProduct.nt011{width:325px;left:52%;right:auto;top:18px;transform:translateX(-50%);z-index:4}
+.heroProduct.tus{width:280px;left:calc(1% + 20px);right:auto;bottom:12px;z-index:2}
+.heroProduct.nt009{width:246px;right:1%;top:auto;bottom:48px;z-index:3}
 #featured .productMedia{background:#fff}
 #featured .productInfo{background:#f3f5f7}
 #featured .productInfo h3{min-height:2.24em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
@@ -38,9 +41,6 @@
 
 @media(max-width:980px){
   .procurementPanel{grid-template-columns:1fr}
-  .heroProduct.nt011{right:165px;top:32px}
-  .heroProduct.nt009{right:10px;top:155px}
-  .heroProduct.tus{width:220px;right:180px;bottom:24px}
   .nav.mobileNavReady{position:relative}
   .mobileMenuToggle{display:block;flex:0 0 auto}
   .nav.mobileNavReady .links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:14px;background:#fff;border:1px solid #e7ebf0;border-radius:0 0 16px 16px;box-shadow:0 18px 36px rgba(15,23,42,.12);flex-direction:column;align-items:stretch;gap:0}
@@ -51,9 +51,11 @@
 }
 
 @media(max-width:640px){
-  .heroProduct.nt011{width:205px;right:100px;top:24px}
-  .heroProduct.nt009{width:155px;right:0;top:132px}
-  .heroProduct.tus{width:165px;right:125px;bottom:24px}
+  .heroVisual{min-height:430px;overflow:hidden;margin-top:10px}
+  .heroHalo{width:330px;height:330px;left:50%;top:51%;transform:translate(-50%,-50%)}
+  .heroProduct.nt011{width:228px;left:50%;right:auto;top:12px;transform:translateX(-50%)}
+  .heroProduct.tus{width:188px;left:20px;right:auto;bottom:18px}
+  .heroProduct.nt009{width:174px;right:0;top:auto;bottom:54px}
   .contactTrustHead{display:block}
   .contactTrustHead h2{font-size:36px}
   .contactTrustHead p{margin-top:12px;max-width:none}
