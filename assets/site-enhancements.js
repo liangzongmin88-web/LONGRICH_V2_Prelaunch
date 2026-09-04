@@ -2,6 +2,32 @@
   const GA4_MEASUREMENT_ID = 'G-09MR5V2JWH';
   const CLARITY_PROJECT_ID = 'y68zlggfxt';
 
+  /* Progressive semantic fixes for legacy/static pages. */
+  const header = document.querySelector('body > header');
+  const footer = document.querySelector('body > footer, body > .footer');
+  let main = document.querySelector('main');
+  if (!main && header) {
+    main = document.createElement('main');
+    main.id = 'main-content';
+    const nodes = [];
+    let node = header.nextSibling;
+    while (node && node !== footer) {
+      const next = node.nextSibling;
+      nodes.push(node);
+      node = next;
+    }
+    if (nodes.length) {
+      header.after(main);
+      nodes.forEach(item => main.append(item));
+    }
+  }
+
+  const primaryNav = document.querySelector('.links');
+  if (primaryNav) primaryNav.setAttribute('aria-label', 'Main navigation');
+  const brandLink = document.querySelector('.nav > a:has(.brand)');
+  if (brandLink) brandLink.setAttribute('aria-label', 'LONGRICH Power Solutions home');
+  document.querySelectorAll('.category .icon').forEach(icon => icon.setAttribute('aria-hidden', 'true'));
+
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag() {
     window.dataLayer.push(arguments);
@@ -32,9 +58,9 @@
     window.addEventListener(eventName, loadAnalytics, { once: true, passive: true });
   });
   if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(loadAnalytics, { timeout: 1500 });
+    window.requestIdleCallback(loadAnalytics, { timeout: 3000 });
   } else {
-    window.setTimeout(loadAnalytics, 1000);
+    window.setTimeout(loadAnalytics, 2500);
   }
 
   const track = (eventName, params = {}) => {
@@ -52,10 +78,12 @@
     [...nav.children].filter(el => el.matches('a') && !el.querySelector('.brand')).forEach(el => el.remove());
     links = document.createElement('nav');
     links.className = 'links';
+    links.setAttribute('aria-label', 'Main navigation');
     links.innerHTML = '<a href="products.html">Products</a><a href="oem-odm.html">OEM / ODM</a><a href="manufacturing.html">Manufacturing</a><a href="quality-testing.html">Quality & Testing</a><a href="engineering-resources.html">Engineering Resources</a><a href="about-us.html">About Us</a><a href="contact-us.html">Contact</a><a class="cta" href="request-a-quote.html">Request a Quote</a>';
     nav.append(links);
   }
   if (nav && links) {
+    links.setAttribute('aria-label', 'Main navigation');
     links.id ||= 'primary-navigation';
     if (!links.querySelector('a[href="engineering-resources.html"]')) {
       const resourceLink = document.createElement('a');
@@ -69,14 +97,13 @@
         else links.append(resourceLink);
       }
     }
-    links.id ||= 'primary-navigation';
     const button = document.createElement('button');
     button.className = 'mobileMenuToggle';
     button.type = 'button';
     button.setAttribute('aria-label', 'Open navigation menu');
     button.setAttribute('aria-controls', links.id);
     button.setAttribute('aria-expanded', 'false');
-    button.innerHTML = '<span></span>';
+    button.innerHTML = '<span aria-hidden="true"></span>';
     nav.append(button);
     nav.classList.add('mobileNavReady');
 
@@ -139,27 +166,16 @@
     const model = card.querySelector('img')?.alt;
     const href = productLinks[model];
     if (!href) return;
-    card.setAttribute('role', 'link');
-    card.tabIndex = 0;
-    card.setAttribute('aria-label', `View ${model} product details`);
     if (!coreProducts.has(model)) card.classList.add('productCardExtra');
     const info = card.querySelector('.productInfo');
     if (info && !info.querySelector('a')) {
       const cta = document.createElement('a');
       cta.className = 'productCardCta';
       cta.href = href;
+      cta.setAttribute('aria-label', `View ${model} product details`);
       cta.textContent = 'View Details →';
       info.append(cta);
     }
-    card.addEventListener('click', event => {
-      if (!event.target.closest('a')) window.location.href = href;
-    });
-    card.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        window.location.href = href;
-      }
-    });
   });
 
   const grid = document.querySelector('#featured .productGrid');
