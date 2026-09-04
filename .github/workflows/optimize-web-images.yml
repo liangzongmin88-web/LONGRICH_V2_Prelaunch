@@ -1,0 +1,65 @@
+name: Optimize web images
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/optimize-web-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install WebP tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y webp
+
+      - name: Generate WebP product assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          find assets/images/products -type f -name '*-transparent.png' -print0 | while IFS= read -r -d '' src; do
+            dst="${src%.png}.webp"
+            cwebp -quiet -q 88 -m 6 -alpha_q 100 "$src" -o "$dst"
+          done
+
+      - name: Switch HTML product imagery to WebP
+        shell: python
+        run: |
+          from pathlib import Path
+          for p in Path('.').glob('*.html'):
+              s = p.read_text(encoding='utf-8')
+              s2 = s.replace('-transparent.png', '-transparent.webp')
+              if p.name == 'index.html':
+                  preload = '<link rel="preload" as="image" href="assets/images/products/NT011-US-transparent.webp" fetchpriority="high"/>\n'
+                  if preload not in s2:
+                      s2 = s2.replace('<link href="https://www.longrichpower.com/" rel="canonical"/>', preload + '<link href="https://www.longrichpower.com/" rel="canonical"/>')
+                  s2 = s2.replace('class="heroProduct nt011" src="assets/images/products/NT011-US-transparent.webp"', 'class="heroProduct nt011" src="assets/images/products/NT011-US-transparent.webp" loading="eager"')
+                  s2 = s2.replace('class="heroProduct nt009" src="assets/images/products/NT009-ALL-transparent.webp"', 'class="heroProduct nt009" src="assets/images/products/NT009-ALL-transparent.webp" loading="lazy" fetchpriority="low"')
+                  s2 = s2.replace('class="heroProduct tus" src="assets/images/products/TUS-11-transparent.webp"', 'class="heroProduct tus" src="assets/images/products/TUS-11-transparent.webp" loading="lazy" fetchpriority="low"')
+              if s2 != s:
+                  p.write_text(s2, encoding='utf-8')
+
+      - name: Commit optimized image assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/images/products/*.webp *.html
+          if git diff --cached --quiet; then
+            echo "No image optimization changes to commit"
+            exit 0
+          fi
+          git commit -m "Optimize product image delivery with WebP"
+          git push origin HEAD:main
