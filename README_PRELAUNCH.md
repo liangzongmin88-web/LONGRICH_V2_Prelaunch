@@ -38,3 +38,6 @@
 - Organized products into Universal Travel Adapters, Travel Plug Adapters, Voltage Converters, and Power Strips & Wall Outlets.
 - Prioritized US-market configurations within each relevant category.
 - Updated the Products page, category pages, homepage highlights, sitemap, and product-image lock manifest.
+
+## Performance optimization
+- Added automated transparent WebP generation for locked product images. Original PNG masters remain unchanged.
