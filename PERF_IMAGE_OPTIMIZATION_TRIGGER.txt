@@ -1,0 +1,1 @@
+Trigger WebP optimization workflow for the September 4 performance pass.
