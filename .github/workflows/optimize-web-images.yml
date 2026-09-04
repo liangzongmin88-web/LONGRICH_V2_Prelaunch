@@ -3,7 +3,7 @@ name: Optimize web images
 on:
   push:
     branches:
-      - perf-images-sep04
+      - main
     paths-ignore:
       - '.github/workflows/optimize-web-images.yml'
 
@@ -62,4 +62,4 @@ jobs:
             exit 0
           fi
           git commit -m "Optimize product image delivery with WebP"
-          git push origin HEAD:perf-images-sep04
+          git push origin HEAD:main
