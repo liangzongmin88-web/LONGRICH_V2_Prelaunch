@@ -1,5 +1,5 @@
 /* Shared navigation and interaction refinements. */
-:root{--product-subject-size:84%}
+:root{--product-subject-size:84%;--muted:#475569}
 .heroVisual{min-height:540px;overflow:hidden}
 .heroHalo{width:450px;height:450px;left:52%;top:49%;transform:translate(-50%,-50%)}
 .heroProduct{height:auto;max-width:none;filter:drop-shadow(0 22px 30px rgba(23,40,70,.14))}
@@ -16,7 +16,7 @@
 .whatsappDirect{display:block;margin-top:10px;color:#0757d8!important;font-size:13px;font-weight:850;text-decoration:none}
 .contactTrustHead{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:30px}
 .contactTrustHead h2{font-size:42px;letter-spacing:-1.7px;margin:0}
-.contactTrustHead p{max-width:560px;color:#4b5c70;margin:0}
+.contactTrustHead p{max-width:560px;color:#475569;margin:0}
 .mobileMenuToggle{display:none;width:44px;height:44px;border:1px solid #aebdcd;border-radius:10px;background:#fff;color:#0c2f63;align-items:center;justify-content:center;cursor:pointer;padding:0}
 .mobileMenuToggle span,.mobileMenuToggle:before,.mobileMenuToggle:after{content:"";display:block;width:20px;height:2px;background:currentColor;transition:transform .2s ease,opacity .2s ease}
 .mobileMenuToggle span{margin:5px 0}
@@ -35,7 +35,7 @@
 .procurementPanel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
 .procurementCard{border:1px solid #d5dde7;border-radius:18px;background:#fff;padding:22px}
 .procurementCard h3{margin:0 0 8px;font-size:18px}
-.procurementCard p,.procurementCard li{color:#4b5c70;font-size:14px}
+.procurementCard p,.procurementCard li{color:#475569;font-size:14px}
 .procurementCard ul{margin:0;padding-left:18px}
 .buyerActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
 
@@ -46,12 +46,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .links a,.footer a,.textlink,.whatsappDirect,.productCardCta{min-height:44px;display:inline-flex;align-items:center}
 .links a{padding-block:10px}
 .footer a{padding-block:4px}
-.category p,.productInfo p,.sectionHead p,.contact p,.capCard span{color:#4b5c70!important}
-.productInfo .tag,.tag{color:#36536f!important}
-.brand small{color:#445b78!important}
-.copy{color:#b9c8d9!important}
-.footer a{color:#c4d2e2!important}
-.footer p,.footer li{color:#c4d2e2}
+.category p,.productInfo p,.sectionHead p,.contact p,.capCard span,.hero p,.photoText p{color:#475569!important}
+.productInfo .tag,.tag{color:#2f4c68!important}
+.brand small{color:#3f5572!important}
+.copy{color:#c7d3e1!important}
+.footer a{color:#d0dbe7!important}
+.footer p,.footer li{color:#d0dbe7}
+.trust,.statline{color:#334155!important}
 [hidden]{display:none!important}
 
 /* Keep all primary interactive controls comfortably touchable on mobile. */
