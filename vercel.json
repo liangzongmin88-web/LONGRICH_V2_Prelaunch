@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "longrichpower.com"
+        }
+      ],
+      "destination": "https://www.longrichpower.com/$1",
+      "permanent": true
+    }
+  ]
+}
