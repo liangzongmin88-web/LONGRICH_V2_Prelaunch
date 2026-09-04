@@ -22,6 +22,29 @@ Snapshot date: 2026-09-04 (GSC report last updated 2026-08-28)
 | Duplicate, user-selected canonical differs | 1 | Medium | Inspect canonical target and remove conflicting internal/sitemap signals if accidental. |
 | Alternate page with proper canonical tag | 1 | Low | Usually expected if canonical is intentional. |
 
+## 28-day site-wide Search Performance baseline
+Captured from GSC on 2026-09-04.
+
+- Total clicks: 3
+- Total impressions: 98
+- CTR: 3.1%
+- Average position: 30.9
+
+### Visible top queries from the current GSC snapshot
+| Query | Clicks | Impressions | Interpretation |
+|---|---:|---:|---|
+| uk power strip market | 0 | 10 | Clear early demand signal for market/research content around power strips. |
+| power strip market | 0 | 7 | Confirms Google is already associating LONGRICH with power-strip market content. |
+| longrich | 0 | 2 | Brand discovery signal. |
+| longrich link | 0 | 2 | Brand/navigation signal; low priority. |
+| difference between travel adapter and power adapter | 0 | 2 | Relevant informational long-tail that can support travel-adapter buyer education. |
+
+### Baseline interpretation
+- Organic visibility has started: 98 impressions and 3 clicks within the current 28-day window.
+- Average position 30.9 means most visible queries are still around page 3-4; the immediate SEO objective is to move relevant queries into Top 20 and then Top 10.
+- Current visible demand is broader than the P0 travel-adapter commercial cluster. Power-strip market queries are already surfacing and should be preserved rather than overwritten.
+- Do not create many generic articles yet. First identify which existing landing pages are earning these impressions, then improve those pages and internal links.
+
 ## P0 pages — URL Inspection result
 
 | Page | Primary query intent | Index status | Current issue | Next action |
@@ -40,11 +63,12 @@ P0 indexation: 4 / 5 = 80%
 - NT011-US Open Graph type: changed from `product` to `website`.
 
 ## Immediate execution order
-1. `/oem-odm-travel-adapter.html`: click **Request Indexing** now that Live Test passed.
-2. `/nt011-us.html`: after deployment, run **Test Live URL** once; if the Product enhancement is absent in live test, click **Request Indexing** to refresh Google's stored version.
-3. For the four indexed P0 pages, collect Performance > last 28 days > exact Page filter and record impressions, clicks, CTR, average position and top query.
-4. Open the 55-URL "Discovered - currently not indexed" group and export or screenshot the URL list so current pages can be separated from obsolete/low-priority URLs.
-5. Open the 2-URL "Crawled - currently not indexed" group and inspect those two URLs individually for content duplication, thin content or canonical conflicts.
+1. In GSC Performance, click the **Pages** tab and capture the top landing pages for the same 28-day period. This is the next required dataset.
+2. For the top landing pages, record impressions, clicks, CTR and average position; map each page to its visible queries.
+3. `/oem-odm-travel-adapter.html`: click **Request Indexing** now that Live Test passed.
+4. `/nt011-us.html`: after deployment, run **Test Live URL** once; if the Product enhancement is absent in live test, click **Request Indexing** to refresh Google's stored version.
+5. Open the 55-URL "Discovered - currently not indexed" group and export or screenshot the URL list so current pages can be separated from obsolete/low-priority URLs.
+6. Open the 2-URL "Crawled - currently not indexed" group and inspect those two URLs individually for content duplication, thin content or canonical conflicts.
 
 ## GSC collection method
 For each indexed P0 URL:
@@ -67,6 +91,10 @@ Do not fabricate `offers`, `review`, or `aggregateRating`. For quote-only B2B pa
 ## Weekly KPI
 - Indexed URLs / known URLs
 - P0 indexed pages / 5
+- Site-wide organic impressions
+- Site-wide organic clicks
+- Site-wide CTR
+- Site-wide average position
 - P0 total impressions
 - P0 total clicks
 - Number of P0 queries in Top 30
