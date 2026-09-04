@@ -1,0 +1,80 @@
+name: Strengthen About Us entity schema
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/about-us-entity-schema.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add AboutPage and Organization schema
+        shell: python
+        run: |
+          from pathlib import Path
+          import json
+
+          p = Path('about-us.html')
+          s = p.read_text(encoding='utf-8')
+
+          if '"@type":"AboutPage"' in s:
+              raise SystemExit('AboutPage schema already present')
+
+          data = {
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": "https://www.longrichpower.com/#organization",
+                "name": "LONGRICH Power Solutions",
+                "url": "https://www.longrichpower.com/",
+                "foundingDate": "2002",
+                "description": "B2B power product manufacturer with engineering, SMT, injection molding, assembly, testing and OEM/ODM capabilities."
+              },
+              {
+                "@type": "AboutPage",
+                "@id": "https://www.longrichpower.com/about-us.html#webpage",
+                "url": "https://www.longrichpower.com/about-us.html",
+                "name": "About LONGRICH | Power Product Manufacturer Since 2002",
+                "description": "Learn about LONGRICH, a B2B power product manufacturer with engineering, SMT, injection molding, assembly, testing and OEM/ODM capabilities.",
+                "about": {"@id": "https://www.longrichpower.com/#organization"},
+                "publisher": {"@id": "https://www.longrichpower.com/#organization"},
+                "breadcrumb": {"@id": "https://www.longrichpower.com/about-us.html#breadcrumb"}
+              },
+              {
+                "@type": "BreadcrumbList",
+                "@id": "https://www.longrichpower.com/about-us.html#breadcrumb",
+                "itemListElement": [
+                  {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.longrichpower.com/"},
+                  {"@type": "ListItem", "position": 2, "name": "About LONGRICH", "item": "https://www.longrichpower.com/about-us.html"}
+                ]
+              }
+            ]
+          }
+          block = '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '</script>\n'
+          s = s.replace('</head>', block + '</head>', 1)
+          p.write_text(s, encoding='utf-8')
+
+      - name: Commit entity schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add about-us.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Strengthen About Us entity schema"
+          git push origin HEAD:main
