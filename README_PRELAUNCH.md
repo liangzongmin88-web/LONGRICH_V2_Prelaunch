@@ -41,3 +41,5 @@
 
 ## Performance optimization
 - Added automated transparent WebP generation for locked product images. Original PNG masters remain unchanged.
+- Added lazy loading, async decoding, priority hints, delayed analytics, and reduced resize layout work.
+- Added accessibility cleanup for contrast, touch targets, and sequential heading hierarchy.
