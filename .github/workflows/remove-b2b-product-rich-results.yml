@@ -1,0 +1,136 @@
+name: Remove B2B product rich-result markup
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/remove-b2b-product-rich-results.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Convert B2B Product JSON-LD to WebPage semantics
+        shell: python
+        run: |
+          from pathlib import Path
+          import json, re
+
+          files = [
+            'ecs-bs019.html',
+            'ecs-aus03.html',
+            'tus-4.html',
+            'wpg01.html',
+            'tus-8.html',
+            'nt011-us.html',
+            'nt010.html',
+            'nt009-all.html',
+            'ecs-us019.html',
+            'tus-11.html',
+            'ecs-eu010.html',
+          ]
+
+          org_id = 'https://www.longrichpower.com/#organization'
+          script_re = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
+          changed_files = []
+
+          def has_type(obj, t):
+              typ = obj.get('@type') if isinstance(obj, dict) else None
+              return typ == t or (isinstance(typ, list) and t in typ)
+
+          for filename in files:
+              p = Path(filename)
+              if not p.exists():
+                  print(f'Skip missing {filename}')
+                  continue
+              html = p.read_text(encoding='utf-8')
+              changed = False
+
+              def transform_script(match):
+                  nonlocal changed
+                  raw = match.group(1).strip()
+                  try:
+                      data = json.loads(raw)
+                  except Exception:
+                      return match.group(0)
+
+                  def convert_product(prod, breadcrumb_id=None):
+                      url = prod.get('url') or ('https://www.longrichpower.com/' + filename)
+                      name = prod.get('name') or Path(filename).stem
+                      description = prod.get('description')
+                      page_id = url + '#webpage'
+                      about = {
+                          '@type': 'Thing',
+                          'name': name
+                      }
+                      page = {
+                          '@type': 'WebPage',
+                          '@id': page_id,
+                          'url': url,
+                          'name': name,
+                          'about': about,
+                          'publisher': {'@id': org_id}
+                      }
+                      if description:
+                          page['description'] = description
+                      if breadcrumb_id:
+                          page['breadcrumb'] = {'@id': breadcrumb_id}
+                      return page
+
+                  if isinstance(data, dict) and isinstance(data.get('@graph'), list):
+                      graph = data['@graph']
+                      breadcrumb_id = None
+                      for node in graph:
+                          if isinstance(node, dict) and has_type(node, 'BreadcrumbList'):
+                              breadcrumb_id = node.get('@id')
+                              break
+                      new_graph = []
+                      local_change = False
+                      for node in graph:
+                          if isinstance(node, dict) and has_type(node, 'Product'):
+                              new_graph.append(convert_product(node, breadcrumb_id))
+                              local_change = True
+                          else:
+                              new_graph.append(node)
+                      if local_change:
+                          data['@graph'] = new_graph
+                          changed = True
+                          return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '</script>'
+
+                  if isinstance(data, dict) and has_type(data, 'Product'):
+                      data = convert_product(data)
+                      changed = True
+                      return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '</script>'
+
+                  return match.group(0)
+
+              new_html = script_re.sub(transform_script, html)
+              if changed:
+                  p.write_text(new_html, encoding='utf-8')
+                  changed_files.append(filename)
+
+          print('Changed:', ', '.join(changed_files) if changed_files else 'none')
+          if not changed_files:
+              raise SystemExit('No Product JSON-LD found in target files')
+
+      - name: Commit cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ecs-bs019.html ecs-aus03.html tus-4.html wpg01.html tus-8.html nt011-us.html nt010.html nt009-all.html ecs-us019.html tus-11.html ecs-eu010.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Remove retail Product rich-result markup from B2B pages"
+          git push origin HEAD:main
