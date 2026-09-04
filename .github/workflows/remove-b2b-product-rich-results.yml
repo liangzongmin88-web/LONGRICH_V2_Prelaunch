@@ -1,5 +1,6 @@
 name: Remove B2B product rich-result markup
 
+# retrigger 2026-09-04
 on:
   push:
     branches: [main]
