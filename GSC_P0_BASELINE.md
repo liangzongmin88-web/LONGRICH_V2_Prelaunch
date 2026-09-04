@@ -38,6 +38,11 @@ Captured from GSC on 2026-09-04.
 | longrich | 0 | 2 | Brand discovery signal. |
 | longrich link | 0 | 2 | Brand/navigation signal; low priority. |
 | difference between travel adapter and power adapter | 0 | 2 | Relevant informational long-tail that can support travel-adapter buyer education. |
+| what is a travel adapter | 0 | 2 | Informational travel-adapter demand signal. |
+| 45w vs 70w travel adapter | 0 | 1 | Direct buyer-guide signal for the 20W/45W/70W comparison page. |
+| nt011 | 0 | 1 | Direct model query signal for NT011/NT011-US cluster. |
+| difference between voltage converter and adapter | 0 | 1 | Relevant comparison intent for converter-vs-adapter content. |
+| global plug power adapter manufacturer | 0 | 1 | Commercial manufacturer-intent signal. |
 
 ### Top landing pages visible in the 28-day Pages report
 | Page | Clicks | Impressions | CTR | Immediate interpretation |
@@ -45,21 +50,20 @@ Captured from GSC on 2026-09-04.
 | https://www.longrichpower.com/ | 1 | 13 | 7.7% | Homepage already earns clicks. Preserve; use it to pass internal-link authority to P0 commercial pages. |
 | /nt009-uk.html | 1 | 3 | 33.3% | Very small sample but strong early click signal. Keep visible and strengthen relevant UK/internal links rather than rewriting aggressively. |
 | /why-travel-adapters-fall-out-of-wall-sockets.html | 1 | 3 | 33.3% | Engineering/problem-solution content is already attracting clicks; strong GEO/authority signal. |
-| /power-strips-wall-outlets.html | 0 | 28 | 0% | Highest-impression visible landing page and strongest immediate SEO opportunity. Improve title/meta and query alignment around power strip market / supplier intent. |
+| /power-strips-wall-outlets.html | 0 | 28 | 0% | Highest-impression visible landing page; first CTR/ranking optimization already completed. |
 | /about-us.html | 0 | 16 | 0% | High visibility for a company page but no clicks; likely brand/company discovery. Improve title/meta only if queries justify it. |
-| /nt011-us.html | 0 | 12 | 0% | Important P0 product page has impressions but no clicks. Prioritize CTR/query alignment after current schema recrawl settles. |
-| /20w-vs-45w-vs-70w-travel-adapter.html | 0 | 8 | 0% | Buyer-guide page is surfacing. Good candidate for stronger search snippet and internal product links. |
+| /nt011-us.html | 0 | 12 | 0% | Important P0 product page has impressions but no clicks. Next page for query-level analysis. |
+| /20w-vs-45w-vs-70w-travel-adapter.html | 0 | 8 | 0% | Buyer-guide page is surfacing; visible query `45w vs 70w travel adapter` confirms relevance. |
 | /nt009-all.html | 0 | 8 | 0% | Product page has early visibility. Check query fit before changing copy. |
 | http://longrichpower.com/ | 0 | 7 | 0% | Legacy HTTP homepage appearing in performance data; confirm permanent HTTPS redirect and avoid linking to HTTP anywhere. |
 | /contact-us.html | 0 | 7 | 0% | Low-priority SEO landing page; conversion page visibility is acceptable but should not be a ranking focus. |
 
-### Baseline interpretation
-- Organic visibility has started: 98 impressions and 3 clicks within the current 28-day window.
-- Average position 30.9 means most visible queries are still around page 3-4; the immediate SEO objective is to move relevant queries into Top 20 and then Top 10.
-- The strongest immediate opportunity is `/power-strips-wall-outlets.html`: 28 impressions, 0 clicks, while visible queries include `uk power strip market` and `power strip market`.
-- Engineering content is already proving useful: `/why-travel-adapters-fall-out-of-wall-sockets.html` earned 1 click from only 3 impressions.
-- Product CTR signals are mixed: NT009-UK has an early click, while NT011-US has 12 impressions but 0 clicks. NT011-US should be optimized using its actual queries rather than generic rewriting.
-- Do not create many generic articles yet. First improve the pages that already earn impressions and clicks.
+## Power-strip optimization status
+- `/power-strips-wall-outlets.html` was aligned to B2B manufacturer intent and regional market wording.
+- New title: `Power Strip Manufacturer for US, UK, EU & AU Markets | LONGRICH`.
+- Added market-oriented copy and internal links for UK / US / EU / AU platforms.
+- Primary observed demand signals: `uk power strip market` and `power strip market`.
+- Next step for this page: wait for recrawl, then compare impressions, CTR and average position after 7-14 days.
 
 ## P0 pages — URL Inspection result
 
@@ -73,18 +77,12 @@ Captured from GSC on 2026-09-04.
 
 P0 indexation: 4 / 5 = 80%
 
-## Current execution status
-- OEM/ODM page Live Test: PASSED; page is eligible for Google indexing.
-- NT011-US Product rich-result markup: intentionally removed because this is a B2B RFQ page without public offers/reviews/ratings.
-- NT011-US Open Graph type: changed from `product` to `website`.
-
 ## Immediate execution order
-1. Filter GSC by page `/power-strips-wall-outlets.html`, keep 28 days, then open Queries. Capture clicks, impressions, average position and the top queries. This is now the highest-priority ranking/CTR page.
-2. Filter GSC by page `/nt011-us.html`, then open Queries. Capture the same metrics before changing its title/meta.
-3. Filter GSC by page `/20w-vs-45w-vs-70w-travel-adapter.html`, then open Queries. Use actual query wording to improve the buyer guide.
-4. `/oem-odm-travel-adapter.html`: click **Request Indexing** now that Live Test passed.
-5. `/nt011-us.html`: after deployment, run **Test Live URL** once; if the Product enhancement is absent in live test, click **Request Indexing** to refresh Google's stored version.
-6. Confirm that all internal links and sitemap URLs use `https://www.longrichpower.com/`, not the legacy `http://longrichpower.com/` variant.
+1. In GSC, filter exact page `https://www.longrichpower.com/nt011-us.html`, keep 28 days, then open **Queries**. Capture clicks, impressions and—after enabling the metric card—average position. Do not rewrite NT011-US until this page-specific query list is captured.
+2. Then repeat for `https://www.longrichpower.com/20w-vs-45w-vs-70w-travel-adapter.html`.
+3. `/oem-odm-travel-adapter.html`: click **Request Indexing** now that Live Test passed.
+4. `/nt011-us.html`: after deployment, run **Test Live URL** once; if the Product enhancement is absent in live test, click **Request Indexing** to refresh Google's stored version.
+5. Confirm that all internal links and sitemap URLs use `https://www.longrichpower.com/`, not the legacy `http://longrichpower.com/` variant.
 
 ## Decision rules
 - Not indexed + live test eligible: Request Indexing.
