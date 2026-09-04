@@ -13,11 +13,11 @@
 .productCard .productMedia img,.productCard .productVisual img,.productCard .productPic img,.product .pic img,.card .media img{width:var(--product-subject-size);height:var(--product-subject-size);max-width:var(--product-subject-size);max-height:var(--product-subject-size);object-fit:contain;object-position:center}
 .heroVisual:has(img[src*="ECS-BS019-transparent"]){background:#fff}
 .mailtoForm button.btn{font:inherit;cursor:pointer}
-.whatsappDirect{display:block;margin-top:10px;color:#0b63f6!important;font-size:13px;font-weight:850;text-decoration:none}
+.whatsappDirect{display:block;margin-top:10px;color:#0757d8!important;font-size:13px;font-weight:850;text-decoration:none}
 .contactTrustHead{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:30px}
 .contactTrustHead h2{font-size:42px;letter-spacing:-1.7px;margin:0}
-.contactTrustHead p{max-width:560px;color:#596579;margin:0}
-.mobileMenuToggle{display:none;width:44px;height:44px;border:1px solid #cfd8e3;border-radius:10px;background:#fff;color:#0c2f63;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.contactTrustHead p{max-width:560px;color:#4b5c70;margin:0}
+.mobileMenuToggle{display:none;width:44px;height:44px;border:1px solid #aebdcd;border-radius:10px;background:#fff;color:#0c2f63;align-items:center;justify-content:center;cursor:pointer;padding:0}
 .mobileMenuToggle span,.mobileMenuToggle:before,.mobileMenuToggle:after{content:"";display:block;width:20px;height:2px;background:currentColor;transition:transform .2s ease,opacity .2s ease}
 .mobileMenuToggle span{margin:5px 0}
 .nav.menuOpen .mobileMenuToggle:before{transform:translateY(7px) rotate(45deg)}
@@ -33,23 +33,29 @@
 .viewAllProducts{appearance:none;min-width:44px;min-height:44px;border:1px solid #0f172a;background:#fff;color:#0f172a;border-radius:11px;padding:13px 22px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
 .viewAllProducts:hover{background:#0f172a;color:#fff}
 .procurementPanel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
-.procurementCard{border:1px solid #e2e8f0;border-radius:18px;background:#fff;padding:22px}
+.procurementCard{border:1px solid #d5dde7;border-radius:18px;background:#fff;padding:22px}
 .procurementCard h3{margin:0 0 8px;font-size:18px}
-.procurementCard p,.procurementCard li{color:#596579;font-size:14px}
+.procurementCard p,.procurementCard li{color:#4b5c70;font-size:14px}
 .procurementCard ul{margin:0;padding-left:18px}
 .buyerActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
 
 /* Lighthouse accessibility refinements. */
 body{overflow-wrap:anywhere}
 a,button,input,select,textarea{font:inherit}
-a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #0b63f6;outline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #0757d8;outline-offset:3px}
 .links a,.footer a,.textlink,.whatsappDirect,.productCardCta{min-height:44px;display:inline-flex;align-items:center}
 .links a{padding-block:10px}
 .footer a{padding-block:4px}
-.category p,.productInfo p,.sectionHead p,.contact p,.capCard span{color:#596579}
-.copy{color:#aebed1}
-.brand small{color:#657b97}
+.category p,.productInfo p,.sectionHead p,.contact p,.capCard span{color:#4b5c70!important}
+.productInfo .tag,.tag{color:#36536f!important}
+.brand small{color:#445b78!important}
+.copy{color:#b9c8d9!important}
+.footer a{color:#c4d2e2!important}
+.footer p,.footer li{color:#c4d2e2}
 [hidden]{display:none!important}
+
+/* Keep all primary interactive controls comfortably touchable on mobile. */
+.btn,.cta,.mobileMenuToggle,.viewAllProducts,.buyerActions a,.buyerActions button{min-width:44px;min-height:44px}
 
 /* Reduce below-the-fold rendering work without changing layout. */
 @supports (content-visibility:auto){
@@ -65,7 +71,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .procurementPanel{grid-template-columns:1fr}
   .nav.mobileNavReady{position:relative}
   .mobileMenuToggle{display:block;flex:0 0 auto}
-  .nav.mobileNavReady .links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:14px;background:#fff;border:1px solid #e7ebf0;border-radius:0 0 16px 16px;box-shadow:0 18px 36px rgba(15,23,42,.12);flex-direction:column;align-items:stretch;gap:0}
+  .nav.mobileNavReady .links{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:14px;background:#fff;border:1px solid #d5dde7;border-radius:0 0 16px 16px;box-shadow:0 18px 36px rgba(15,23,42,.12);flex-direction:column;align-items:stretch;gap:0}
   .nav.mobileNavReady.menuOpen .links{display:flex}
   .nav.mobileNavReady .links a{display:flex;min-height:48px;padding:12px 14px;border-radius:8px}
   .nav.mobileNavReady .links a:hover{background:#f5f7fa}
