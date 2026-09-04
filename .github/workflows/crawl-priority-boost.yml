@@ -1,0 +1,86 @@
+name: Boost crawl priority for high-value pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/crawl-priority-boost.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  boost:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Refresh sitemap lastmod for priority pages
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          sitemap = Path('sitemap.xml')
+          s = sitemap.read_text(encoding='utf-8')
+          priority_pages = [
+              '/',
+              '/travel-adapter-manufacturer.html',
+              '/oem-odm-travel-adapter.html',
+              '/universal-travel-adapters.html',
+              '/gan-travel-adapter.html',
+              '/nt011-us.html',
+              '/20w-vs-45w-vs-70w-travel-adapter.html',
+              '/power-strips-wall-outlets.html',
+              '/engineering-resources.html',
+              '/why-travel-adapters-fall-out-of-wall-sockets.html',
+              '/quality-testing.html',
+              '/manufacturing.html'
+          ]
+          for page in priority_pages:
+              url = 'https://www.longrichpower.com' + page
+              pattern = re.compile(r'<url><loc>' + re.escape(url) + r'</loc>(?:<lastmod>[^<]+</lastmod>)?</url>')
+              repl = f'<url><loc>{url}</loc><lastmod>2026-09-04</lastmod></url>'
+              s, _ = pattern.subn(repl, s)
+          sitemap.write_text(s, encoding='utf-8')
+
+      - name: Add crawl-priority links to homepage
+        shell: python
+        run: |
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          if 'class="crawlPriorityLinks"' not in s:
+              css = '''<style id="crawl-priority-links-style">
+          .crawlPriorityLinks{padding:28px 0;border-top:1px solid #e7ebf0;border-bottom:1px solid #e7ebf0;background:#fff}
+          .crawlPriorityLinks .inner{width:min(1280px,calc(100% - 48px));margin:auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+          .crawlPriorityLinks strong{font-size:13px;color:#334155;margin-right:4px}
+          .crawlPriorityLinks a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid #d7dee7;border-radius:999px;color:#0c2f63;text-decoration:none;font-size:13px;font-weight:800;background:#fff}
+          @media(max-width:640px){.crawlPriorityLinks .inner{width:calc(100% - 28px)}}
+          </style>'''
+              s = s.replace('</head>', css + '</head>')
+              block = '''<section class="crawlPriorityLinks" aria-label="Buyer resources"><div class="inner"><strong>Buyer resources:</strong><a href="travel-adapter-manufacturer.html">Travel Adapter Manufacturer</a><a href="oem-odm-travel-adapter.html">OEM / ODM Travel Adapter</a><a href="nt011-us.html">NT011-US 70W GaN</a><a href="20w-vs-45w-vs-70w-travel-adapter.html">45W vs 70W Guide</a><a href="power-strips-wall-outlets.html">Power Strip Manufacturer</a><a href="engineering-resources.html">Engineering Resources</a></div></section>'''
+              marker = '<section class="section soft" id="products">'
+              if marker in s:
+                  s = s.replace(marker, block + marker, 1)
+              else:
+                  s = s.replace('</header>', '</header>' + block, 1)
+          p.write_text(s, encoding='utf-8')
+
+      - name: Commit crawl-priority changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml index.html
+          if git diff --cached --quiet; then
+            echo "No crawl-priority changes"
+            exit 0
+          fi
+          git commit -m "Boost crawl priority for high-value acquisition pages"
+          git push origin HEAD:main
