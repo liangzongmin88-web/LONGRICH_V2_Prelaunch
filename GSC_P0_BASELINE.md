@@ -26,20 +26,25 @@ Snapshot date: 2026-09-04 (GSC report last updated 2026-08-28)
 
 | Page | Primary query intent | Index status | Current issue | Next action |
 |---|---|---|---|---|
-| /travel-adapter-manufacturer.html | travel adapter manufacturer / travel adapter factory | Indexed | None shown | Do not request indexing; move to Performance/query optimization |
-| /oem-odm-travel-adapter.html | OEM travel adapter manufacturer | Not indexed — Discovered, currently not indexed | Sitemap discovered; no referring page detected in GSC snapshot; never crawled | Run Live Test, then Request Indexing if eligible; strengthen crawl priority |
-| /universal-travel-adapters.html | universal travel adapter supplier | Indexed | None shown | Do not request indexing; move to Performance/query optimization |
-| /gan-travel-adapter.html | GaN travel adapter OEM | Indexed | None shown | Do not request indexing; move to Performance/query optimization |
-| /nt011-us.html | 70W GaN travel adapter manufacturer / OEM | Indexed | Product snippet: 1 invalid item | Keep indexed; fix or intentionally remove unsupported Product rich-result markup |
+| /travel-adapter-manufacturer.html | travel adapter manufacturer / travel adapter factory | Indexed | None shown | Move to Performance/query optimization |
+| /oem-odm-travel-adapter.html | OEM travel adapter manufacturer | Not indexed — Discovered, currently not indexed | Live Test passed: URL is indexable | Request Indexing, then monitor recrawl/indexing |
+| /universal-travel-adapters.html | universal travel adapter supplier | Indexed | None shown | Move to Performance/query optimization |
+| /gan-travel-adapter.html | GaN travel adapter OEM | Indexed | None shown | Move to Performance/query optimization |
+| /nt011-us.html | 70W GaN travel adapter manufacturer / OEM | Indexed | Old GSC snapshot still shows invalid Product snippet | Current source now uses WebPage + Organization + BreadcrumbList and `og:type=website`; request recrawl and wait for old Product enhancement snapshot to clear |
 
 P0 indexation: 4 / 5 = 80%
 
+## Current execution status
+- OEM/ODM page Live Test: PASSED; page is eligible for Google indexing.
+- NT011-US Product rich-result markup: intentionally removed because this is a B2B RFQ page without public offers/reviews/ratings.
+- NT011-US Open Graph type: changed from `product` to `website`.
+
 ## Immediate execution order
-1. `/oem-odm-travel-adapter.html`: click **Test Live URL**. If HTTP 200, indexable and self-canonical are confirmed, click **Request Indexing**.
-2. Increase crawl priority for the OEM/ODM page with visible internal links from indexed authority pages (Manufacturer, Universal Travel Adapters, GaN and Engineering Resources).
-3. `/nt011-us.html`: inspect the Product snippets error details. Current schema has Product name/specification data but no `offers`, `review`, or `aggregateRating`.
-4. Because LONGRICH is using the page as a B2B RFQ page rather than a public retail checkout page, do **not** invent price/review/rating data. Either keep the Product entity and accept that it is not eligible for Product snippets, or remove Google-targeted Product rich-result markup while retaining WebPage/entity semantics.
-5. For the four indexed P0 pages, collect Performance > last 28 days > exact Page filter and record impressions, clicks, CTR, average position and top query.
+1. `/oem-odm-travel-adapter.html`: click **Request Indexing** now that Live Test passed.
+2. `/nt011-us.html`: after deployment, run **Test Live URL** once; if the Product enhancement is absent in live test, click **Request Indexing** to refresh Google's stored version.
+3. For the four indexed P0 pages, collect Performance > last 28 days > exact Page filter and record impressions, clicks, CTR, average position and top query.
+4. Open the 55-URL "Discovered - currently not indexed" group and export or screenshot the URL list so current pages can be separated from obsolete/low-priority URLs.
+5. Open the 2-URL "Crawled - currently not indexed" group and inspect those two URLs individually for content duplication, thin content or canonical conflicts.
 
 ## GSC collection method
 For each indexed P0 URL:
@@ -57,7 +62,7 @@ For each indexed P0 URL:
 - Page produces clicks but no inquiry actions: improve product/RFQ CTA rather than adding more traffic content.
 
 ## Product snippet policy for B2B pages
-Google Product snippets require a Product `name` plus at least one of `offers`, `review`, or `aggregateRating`. Do not fabricate any of these fields. For quote-only B2B pages without a public sell price or genuine reviews, rich-result eligibility is optional and should not override data accuracy.
+Do not fabricate `offers`, `review`, or `aggregateRating`. For quote-only B2B pages without a public sell price or genuine reviews, use truthful WebPage/entity semantics instead of forcing retail Product rich-result eligibility.
 
 ## Weekly KPI
 - Indexed URLs / known URLs
