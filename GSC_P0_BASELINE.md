@@ -22,31 +22,31 @@ Snapshot date: 2026-09-04 (GSC report last updated 2026-08-28)
 | Duplicate, user-selected canonical differs | 1 | Medium | Inspect canonical target and remove conflicting internal/sitemap signals if accidental. |
 | Alternate page with proper canonical tag | 1 | Low | Usually expected if canonical is intentional. |
 
-## P0 pages
+## P0 pages — URL Inspection result
 
-| Page | Primary query intent | Index status | Impressions (28d) | Clicks (28d) | CTR | Avg position | Top query | Next action |
-|---|---|---|---:|---:|---:|---:|---|---|
-| /travel-adapter-manufacturer.html | travel adapter manufacturer / travel adapter factory | Verify individually |  |  |  |  |  | P0 URL Inspection; Request Indexing if eligible and not indexed |
-| /oem-odm-travel-adapter.html | OEM travel adapter manufacturer | Verify individually |  |  |  |  |  | P0 URL Inspection; Request Indexing if eligible and not indexed |
-| /universal-travel-adapters.html | universal travel adapter supplier | Verify individually |  |  |  |  |  | P0 URL Inspection; Request Indexing if eligible and not indexed |
-| /gan-travel-adapter.html | GaN travel adapter OEM | Verify individually |  |  |  |  |  | P0 URL Inspection; Request Indexing if eligible and not indexed |
-| /nt011-us.html | 70W GaN travel adapter manufacturer / OEM | Verify individually |  |  |  |  |  | P0 URL Inspection; Request Indexing if eligible and not indexed |
+| Page | Primary query intent | Index status | Current issue | Next action |
+|---|---|---|---|---|
+| /travel-adapter-manufacturer.html | travel adapter manufacturer / travel adapter factory | Indexed | None shown | Do not request indexing; move to Performance/query optimization |
+| /oem-odm-travel-adapter.html | OEM travel adapter manufacturer | Not indexed — Discovered, currently not indexed | Sitemap discovered; no referring page detected in GSC snapshot; never crawled | Run Live Test, then Request Indexing if eligible; strengthen crawl priority |
+| /universal-travel-adapters.html | universal travel adapter supplier | Indexed | None shown | Do not request indexing; move to Performance/query optimization |
+| /gan-travel-adapter.html | GaN travel adapter OEM | Indexed | None shown | Do not request indexing; move to Performance/query optimization |
+| /nt011-us.html | 70W GaN travel adapter manufacturer / OEM | Indexed | Product snippet: 1 invalid item | Keep indexed; fix or intentionally remove unsupported Product rich-result markup |
+
+P0 indexation: 4 / 5 = 80%
 
 ## Immediate execution order
-1. Inspect the five P0 URLs individually in GSC URL Inspection.
-2. For each P0 URL that is not indexed, run Live Test and Request Indexing only if HTTP 200, indexable and self-canonical are confirmed.
-3. Open the 55-URL "Discovered - currently not indexed" group and identify which URLs are current sitemap URLs versus old/obsolete URLs.
-4. Open the 2-URL "Crawled - currently not indexed" group and review those pages first for thin/duplicate content or canonical conflict.
-5. Review the 4 redirects, 1 duplicate and 1 alternate-canonical URL; remove only accidental sitemap/internal-link references.
-6. After P0 inspection, record 28-day Performance metrics for each indexed P0 page.
+1. `/oem-odm-travel-adapter.html`: click **Test Live URL**. If HTTP 200, indexable and self-canonical are confirmed, click **Request Indexing**.
+2. Increase crawl priority for the OEM/ODM page with visible internal links from indexed authority pages (Manufacturer, Universal Travel Adapters, GaN and Engineering Resources).
+3. `/nt011-us.html`: inspect the Product snippets error details. Current schema has Product name/specification data but no `offers`, `review`, or `aggregateRating`.
+4. Because LONGRICH is using the page as a B2B RFQ page rather than a public retail checkout page, do **not** invent price/review/rating data. Either keep the Product entity and accept that it is not eligible for Product snippets, or remove Google-targeted Product rich-result markup while retaining WebPage/entity semantics.
+5. For the four indexed P0 pages, collect Performance > last 28 days > exact Page filter and record impressions, clicks, CTR, average position and top query.
 
 ## GSC collection method
-For each URL:
-1. URL Inspection -> confirm whether URL is on Google.
-2. Performance -> Search results -> Page filter -> exact URL.
-3. Use last 28 days for the first baseline.
-4. Record impressions, clicks, CTR and average position.
-5. Open Queries tab and record the highest-impression relevant query.
+For each indexed P0 URL:
+1. Performance -> Search results -> Page filter -> exact URL.
+2. Use last 28 days for the first baseline.
+3. Record impressions, clicks, CTR and average position.
+4. Open Queries tab and record the highest-impression relevant query.
 
 ## Decision rules
 - Not indexed + live test eligible: Request Indexing.
@@ -55,6 +55,9 @@ For each URL:
 - Impressions > 0, CTR low: improve title/meta around the actual query wording.
 - Query intent does not match page: adjust internal-link anchor text or create a dedicated page only when the gap is clear.
 - Page produces clicks but no inquiry actions: improve product/RFQ CTA rather than adding more traffic content.
+
+## Product snippet policy for B2B pages
+Google Product snippets require a Product `name` plus at least one of `offers`, `review`, or `aggregateRating`. Do not fabricate any of these fields. For quote-only B2B pages without a public sell price or genuine reviews, rich-result eligibility is optional and should not override data accuracy.
 
 ## Weekly KPI
 - Indexed URLs / known URLs
@@ -65,6 +68,3 @@ For each URL:
 - Number of P0 queries in Top 10
 - Organic visits to RFQ page
 - Email / WhatsApp / RFQ clicks from organic landing pages
-
-## Public-search note
-Public web search is only a secondary signal and should not be treated as a replacement for GSC URL Inspection. Exact P0 URL index state must be confirmed in Search Console.
