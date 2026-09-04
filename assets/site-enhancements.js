@@ -77,16 +77,16 @@
     links = document.createElement('nav');
     links.className = 'links';
     links.setAttribute('aria-label', 'Main navigation');
-    links.innerHTML = '<a href="products.html">Products</a><a href="oem-odm.html">OEM / ODM</a><a href="manufacturing.html">Manufacturing</a><a href="quality-testing.html">Quality & Testing</a><a href="engineering-resources.html">Engineering Resources</a><a href="about-us.html">About Us</a><a href="contact-us.html">Contact</a><a class="cta" href="request-a-quote.html">Request a Quote</a>';
+    links.innerHTML = '<a href="products.html">Products</a><a href="oem-odm.html">OEM / ODM</a><a href="manufacturing.html">Manufacturing</a><a href="quality-testing.html">Quality & Testing</a><a href="engineering-resources.html">Resources</a><a href="about-us.html">About Us</a><a href="contact-us.html">Contact</a><a class="cta" href="request-a-quote.html">Request a Quote</a>';
     nav.append(links);
   }
   if (nav && links) {
     links.setAttribute('aria-label', 'Main navigation');
     links.id ||= 'primary-navigation';
-    if (!links.querySelector('a[href="engineering-resources.html"]')) {
-      const resourceLink = document.createElement('a');
+    let resourceLink = links.querySelector('a[href="engineering-resources.html"]');
+    if (!resourceLink) {
+      resourceLink = document.createElement('a');
       resourceLink.href = 'engineering-resources.html';
-      resourceLink.textContent = 'Engineering Resources';
       const qualityLink = links.querySelector('a[href="quality-testing.html"]');
       if (qualityLink) qualityLink.after(resourceLink);
       else {
@@ -95,6 +95,7 @@
         else links.append(resourceLink);
       }
     }
+    resourceLink.textContent = 'Resources';
     const button = document.createElement('button');
     button.className = 'mobileMenuToggle';
     button.type = 'button';
