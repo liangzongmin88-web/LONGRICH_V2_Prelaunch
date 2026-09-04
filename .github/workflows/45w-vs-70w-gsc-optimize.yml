@@ -1,0 +1,71 @@
+name: Optimize 45W vs 70W buyer guide from GSC
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/45w-vs-70w-gsc-optimize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Align buyer guide with 45W vs 70W query intent
+        shell: python
+        run: |
+          from pathlib import Path
+
+          p = Path('20w-vs-45w-vs-70w-travel-adapter.html')
+          s = p.read_text(encoding='utf-8')
+
+          replacements = {
+            '<title>20W vs 45W vs 70W Travel Adapter | LONGRICH</title>':
+              '<title>45W vs 70W Travel Adapter: Which Should Buyers Choose? | LONGRICH</title>',
+            '<meta name="description" content="Compare 20W, 45W and 70W travel adapters by device compatibility, thermal design, size, cost and product positioning. See which power level fits your OEM or ODM project.">':
+              '<meta name="description" content="Compare 45W vs 70W travel adapters for laptops, tablets and multi-device charging, with 20W as the compact option. See the trade-offs in size, heat, cost and OEM positioning.">',
+            '<h1>20W vs 45W vs 70W Travel Adapter: Which Power Level Fits Your Market?</h1>':
+              '<h1>45W vs 70W Travel Adapter: Which Power Level Fits Your Market?</h1>',
+            '<p>More wattage is not automatically better. The right travel adapter power level depends on target devices, product size, thermal design, cost, retail positioning and whether laptop charging is part of the value proposition.</p>':
+              '<p>For B2B buyers, the main decision is often 45W vs 70W: 45W balances size, heat and cost, while 70W is better when laptop charging and premium positioning are central. 20W remains the compact phone-focused option.</p>',
+            '"headline":"20W vs 45W vs 70W Travel Adapter"':
+              '"headline":"45W vs 70W Travel Adapter: Which Should Buyers Choose?"'
+          }
+
+          changed = False
+          for old, new in replacements.items():
+              if old in s:
+                  s = s.replace(old, new)
+                  changed = True
+
+          marker = '<section class="section"><div class="wrap"><h2>45W: The Mainstream Middle Ground</h2>'
+          if marker in s and '45W vs 70W: Quick Decision' not in s:
+              block = '''<section class="section"><div class="wrap"><h2>45W vs 70W: Quick Decision</h2><div class="grid3"><div class="card"><span class="metric">45W</span><h3>Choose 45W when...</h3><p>Your target users mainly charge phones, tablets and selected USB-C laptops, and you want a better balance of product size, heat and cost.</p><a href="nt010.html">View NT010 45W platform →</a></div><div class="card"><span class="metric">70W</span><h3>Choose 70W when...</h3><p>Laptop charging is a primary selling point and your retail positioning can support the extra thermal, packaging and cost requirements.</p><a href="nt011-us.html">View NT011-US 70W platform →</a></div><div class="card"><span class="metric">20W</span><h3>Choose 20W when...</h3><p>The product should stay compact and phone-focused, with lower thermal complexity and a more value-oriented position.</p><a href="nt009-all.html">View NT009 20W platform →</a></div></div></div></section>'''
+              s = s.replace(marker, block + marker)
+              changed = True
+
+          if not changed:
+              raise SystemExit('No buyer-guide changes were applied')
+
+          p.write_text(s, encoding='utf-8')
+
+      - name: Commit buyer-guide optimization
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add 20w-vs-45w-vs-70w-travel-adapter.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Optimize 45W vs 70W travel adapter guide from GSC query"
+          git push origin HEAD:main
