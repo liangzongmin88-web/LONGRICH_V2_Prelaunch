@@ -57,11 +57,9 @@
   ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
     window.addEventListener(eventName, loadAnalytics, { once: true, passive: true });
   });
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(loadAnalytics, { timeout: 3000 });
-  } else {
-    window.setTimeout(loadAnalytics, 2500);
-  }
+  window.addEventListener('load', () => {
+    window.setTimeout(loadAnalytics, 10000);
+  }, { once: true });
 
   const track = (eventName, params = {}) => {
     loadAnalytics();
@@ -123,8 +121,9 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') closeMenu();
     });
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 980) closeMenu();
+    const desktopQuery = window.matchMedia('(min-width: 981px)');
+    desktopQuery.addEventListener('change', event => {
+      if (event.matches) closeMenu();
     });
   }
 
