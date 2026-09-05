@@ -38,6 +38,7 @@
 .procurementCard p,.procurementCard li{color:#475569;font-size:14px}
 .procurementCard ul{margin:0;padding-left:18px}
 .buyerActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.qr img{height:auto}
 .intentSection{padding:54px 0;border-bottom:1px solid #e7ebf0;background:#fff}
 .intentIntro{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:22px}
 .intentIntro h2{margin:0;font-size:34px;line-height:1.08;letter-spacing:-1.3px}
