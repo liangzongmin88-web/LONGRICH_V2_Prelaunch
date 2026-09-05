@@ -28,6 +28,60 @@
   if (brandLink) brandLink.setAttribute('aria-label', 'LONGRICH Power Solutions home');
   document.querySelectorAll('.category .icon').forEach(icon => icon.setAttribute('aria-hidden', 'true'));
 
+  /* Sitewide entity identity signal for search engines and AI crawlers. */
+  const entityScript = document.createElement('script');
+  entityScript.type = 'application/ld+json';
+  entityScript.dataset.longrichEntity = 'true';
+  entityScript.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': 'https://www.longrichpower.com/#organization',
+    name: 'LONGRICH Power Solutions',
+    legalName: 'Dongguan LongRich Electronic Co., Ltd.',
+    alternateName: ['LONGRICH', 'LongRich Power Solutions', 'Dongguan LongRich Electronic'],
+    url: 'https://www.longrichpower.com/',
+    foundingDate: '2002',
+    email: 'sales7@cnlongrich.com',
+    description: 'B2B manufacturer of travel adapters, voltage converters, power strips and related power products, with OEM/ODM engineering, testing and production capabilities.',
+    industry: 'Electrical and electronic product manufacturing',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: "3 Heshun Road, Shatou South District, Chang'an Town",
+      addressLocality: 'Dongguan',
+      addressRegion: 'Guangdong',
+      postalCode: '523861',
+      addressCountry: 'CN'
+    },
+    areaServed: ['United States', 'United Kingdom', 'Germany', 'Australia', 'Europe'],
+    sameAs: [
+      'https://www.linkedin.com/company/dongguan-longrich-electronic-co-ltd',
+      'https://sourcing.hktdc.com/en/supplier-store/dglongrich'
+    ],
+    knowsAbout: [
+      'travel adapters',
+      'universal travel adapters',
+      'GaN travel adapters',
+      'grounded travel adapters',
+      'voltage converters',
+      'power strips',
+      'wall outlet extenders',
+      'OEM power products',
+      'ODM power products',
+      'travel power engineering'
+    ]
+  });
+  document.head.append(entityScript);
+
+  if (footer && !footer.querySelector('a[href="company-identity.html"]')) {
+    const identityLink = document.createElement('a');
+    identityLink.href = 'company-identity.html';
+    identityLink.textContent = 'Company Identity';
+    identityLink.setAttribute('aria-label', 'LONGRICH Power Solutions company identity');
+    const target = footer.querySelector('.copy, .copyline, .wrap') || footer;
+    const separator = document.createTextNode(' · ');
+    target.append(separator, identityLink);
+  }
+
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag() {
     window.dataLayer.push(arguments);
