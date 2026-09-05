@@ -38,6 +38,15 @@
 .procurementCard p,.procurementCard li{color:#475569;font-size:14px}
 .procurementCard ul{margin:0;padding-left:18px}
 .buyerActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.intentSection{padding:54px 0;border-bottom:1px solid #e7ebf0;background:#fff}
+.intentIntro{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:22px}
+.intentIntro h2{margin:0;font-size:34px;line-height:1.08;letter-spacing:-1.3px}
+.intentIntro p{max-width:620px;margin:0;color:#475569;font-size:15px}
+.intentGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.intentCard{min-height:210px;padding:24px;border:1px solid #d5dde7;border-radius:20px;background:#f8fafc}
+.intentCard .intentLabel{display:block;margin-bottom:12px;color:#0047b3;font-size:12px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+.intentCard h3{margin:0 0 9px;font-size:19px;line-height:1.25}
+.intentCard p{margin:0;color:#475569;font-size:14px;line-height:1.6}
 
 /* Lighthouse accessibility refinements. */
 body{overflow-wrap:anywhere}
@@ -79,6 +88,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 @media(max-width:980px){
+  .intentGrid{grid-template-columns:1fr 1fr}
   .procurementPanel{grid-template-columns:1fr}
   .nav.mobileNavReady{position:relative}
   .mobileMenuToggle{display:block;flex:0 0 auto}
@@ -90,6 +100,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 @media(max-width:640px){
+  .intentIntro{display:block}
+  .intentIntro p{margin-top:10px}
+  .intentGrid{grid-template-columns:1fr}
+  .intentCard{min-height:0}
   .heroVisual{min-height:430px;overflow:hidden;margin-top:10px}
   .heroHalo{width:330px;height:330px;left:50%;top:51%;transform:translate(-50%,-50%)}
   .heroProduct.nt011{width:228px;left:50%;right:auto;top:12px;transform:translateX(-50%)}
