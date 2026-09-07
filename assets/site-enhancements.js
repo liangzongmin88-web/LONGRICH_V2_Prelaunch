@@ -120,8 +120,30 @@
     window.gtag('event', eventName, params);
   };
 
+  const queryParams = new URLSearchParams(window.location.search);
+  const requestedModel = queryParams.get('model')?.trim() || '';
+  const sourcePage = queryParams.get('source_page')?.trim() || document.referrer || '';
+  let leadReference = queryParams.get('lead_ref')?.trim() || '';
+  try {
+    leadReference ||= window.sessionStorage.getItem('longrich_lead_ref') || '';
+    if (!leadReference) {
+      leadReference = `LR-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+    }
+    window.sessionStorage.setItem('longrich_lead_ref', leadReference);
+  } catch {
+    leadReference ||= `LR-${Date.now().toString(36).toUpperCase()}`;
+  }
+  const pageModel = requestedModel || document.querySelector('.model')?.textContent.replace(/^Model\s+/i, '').trim() || '';
+  const funnelParams = (extra = {}) => ({
+    lead_reference: leadReference,
+    product_model: pageModel,
+    source_page: sourcePage || window.location.pathname,
+    page_location: window.location.href,
+    ...extra,
+  });
+
   if (/\/request-a-quote\.html$/.test(window.location.pathname)) {
-    track('generate_lead_view', { page_location: window.location.href });
+    track('generate_lead_view', funnelParams({ funnel_step: 'rfq_view' }));
   }
 
   const nav = document.querySelector('.nav');
@@ -261,19 +283,20 @@
         const clean = String(value).trim();
         if (clean) lines.push(`${key}: ${clean}`);
       }
-      const subject = form.dataset.subject || 'LONGRICH Website Inquiry';
+      const subject = `[${leadReference}] ${form.dataset.subject || 'LONGRICH Website Inquiry'}`;
+      lines.unshift(`Lead reference: ${leadReference}`, `Source page: ${sourcePage || window.location.href}`);
       const href = `mailto:sales7@cnlongrich.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n\n'))}`;
-      track('generate_lead', {
+      track('generate_lead', funnelParams({
         method: 'rfq_email',
         product_model: String(data.get('Product / Model') || ''),
         target_market: String(data.get('Target Market') || ''),
         estimated_quantity: String(data.get('Estimated Quantity') || ''),
-      });
+        funnel_step: 'rfq_submit',
+      }));
       window.location.href = href;
     });
   });
 
-  const requestedModel = new URLSearchParams(window.location.search).get('model')?.trim();
   if (requestedModel) {
     document.querySelectorAll('[name="Product / Model"]').forEach(input => {
       if (!input.value) input.value = requestedModel;
@@ -283,20 +306,44 @@
     });
   }
 
-  const whatsappUrl = 'https://wa.me/8618820000007';
+  const whatsappBaseUrl = 'https://wa.me/8618820000007';
+  const whatsappMessage = [
+    'Hello LONGRICH, I would like to discuss an OEM/ODM project.',
+    pageModel ? `Product / model: ${pageModel}` : '',
+    `Lead reference: ${leadReference}`,
+    `Source: ${window.location.href}`,
+  ].filter(Boolean).join('\n');
+  const whatsappUrl = `${whatsappBaseUrl}?text=${encodeURIComponent(whatsappMessage)}`;
   document.querySelectorAll('a').forEach(link => {
     if (/whatsapp/i.test(link.textContent || '')) {
       link.href = whatsappUrl;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
     }
+    if (link.href.startsWith('mailto:') && !link.dataset.leadReferenceAdded) {
+      const [address, rawQuery = ''] = link.href.split('?');
+      const mailParams = new URLSearchParams(rawQuery);
+      const originalSubject = mailParams.get('subject') || `${pageModel || 'Website'} Inquiry`;
+      if (!originalSubject.includes(leadReference)) {
+        mailParams.set('subject', `[${leadReference}] ${originalSubject}`);
+      }
+      const originalBody = mailParams.get('body') || '';
+      mailParams.set('body', [`Lead reference: ${leadReference}`, `Source page: ${window.location.href}`, originalBody].filter(Boolean).join('\n\n'));
+      link.href = `${address}?${mailParams.toString()}`;
+      link.dataset.leadReferenceAdded = 'true';
+    } else if (/request-a-quote\.html(?:$|[?#])/.test(link.href)) {
+      const rfqUrl = new URL(link.href, window.location.href);
+      rfqUrl.searchParams.set('lead_ref', leadReference);
+      rfqUrl.searchParams.set('source_page', window.location.pathname);
+      link.href = rfqUrl.href;
+    }
     link.addEventListener('click', () => {
       if (link.href.startsWith('mailto:')) {
-        track('contact_click', { method: 'email', link_url: link.href.split('?')[0] });
-      } else if (link.href.startsWith(whatsappUrl)) {
-        track('contact_click', { method: 'whatsapp', link_url: whatsappUrl });
+        track('contact_click', funnelParams({ method: 'email', link_url: link.href.split('?')[0], funnel_step: 'contact_click' }));
+      } else if (link.href.startsWith(whatsappBaseUrl)) {
+        track('contact_click', funnelParams({ method: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
       } else if (/request-a-quote\.html(?:$|[?#])/.test(link.href)) {
-        track('begin_lead', { method: 'rfq_page', link_url: link.href });
+        track('begin_lead', funnelParams({ method: 'rfq_page', link_url: link.href, funnel_step: 'rfq_click' }));
       }
     });
   });
@@ -310,7 +357,7 @@
     link.rel = 'noopener noreferrer';
     link.textContent = 'Open WhatsApp Chat →';
     link.addEventListener('click', () => {
-      track('contact_click', { method: 'whatsapp', link_url: whatsappUrl });
+      track('contact_click', funnelParams({ method: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
     });
     panel.append(link);
   });
