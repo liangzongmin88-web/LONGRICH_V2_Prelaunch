@@ -120,3 +120,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:1100px){.architectureNav{gap:12px!important;font-size:13px!important}.architectureGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:980px){.navGroup{padding:0}.navDropdown{display:block;position:static;min-width:0;padding:0 0 4px 18px;border:0;border-radius:0;box-shadow:none}.navDropdown a{font-size:13px;padding:8px 12px!important;color:#475569!important}.architectureIntro{display:block}.architecturePills{justify-content:flex-start;max-width:none;margin-top:20px}.architectureGrid,.architectureLinkGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.architectureHero{padding:58px 0 64px}.architectureHero h1{font-size:43px}.architectureHero p{font-size:17px}.architectureSection{padding:64px 0}.architectureGrid,.architectureLinkGrid,.themesGrid,.resourceLinkGrid{grid-template-columns:1fr}.architectureMedia{height:280px}.siteBreadcrumb .wrap{overflow:auto;white-space:nowrap}.architectureFooter{grid-template-columns:1fr!important}}
+
+/* Keep each category hero aligned with its locked representative product. */
+.architectureHeroGrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);align-items:center;gap:48px}
+.architectureHeroProduct{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;color:#0c2f63;text-decoration:none}
+.architectureHeroProduct img{display:block;width:100%;height:310px;object-fit:contain;object-position:center;filter:drop-shadow(0 20px 28px rgba(15,23,42,.12))}
+.architectureHeroProduct span{margin-top:14px;font-size:13px;font-weight:850;letter-spacing:.04em}
+@media(max-width:980px){.architectureHeroGrid{grid-template-columns:1fr}.architectureHeroProduct{width:min(100%,560px);justify-self:center}.architectureHeroProduct img{height:300px}}
+@media(max-width:640px){.architectureHeroGrid{gap:34px}.architectureHeroProduct img{height:250px}}
