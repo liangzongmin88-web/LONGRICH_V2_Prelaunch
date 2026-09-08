@@ -84,7 +84,12 @@ for (const [index, file] of productFiles.entries()) {
     if (prohibited.has(key)) report.prohibitedCommerceFields.push([file, key]);
   });
   const expected = `${SITE}${lock[model].replace(/\.png$/, '-transparent.png')}`;
-  const accepted = new Set([`${SITE}${lock[model]}`, expected]);
+  const accepted = new Set([
+    `${SITE}${lock[model]}`,
+    expected,
+    `${SITE}${lock[model].replace(/\.png$/, '.webp')}`,
+    expected.replace(/\.png$/, '.webp'),
+  ]);
   if (!accepted.has(product.image)) report.imageLockIssues.push([file, product.image]);
 }
 
