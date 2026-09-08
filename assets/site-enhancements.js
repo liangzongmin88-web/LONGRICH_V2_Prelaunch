@@ -159,19 +159,21 @@
   if (nav && links) {
     links.setAttribute('aria-label', 'Main navigation');
     links.id ||= 'primary-navigation';
-    let resourceLink = links.querySelector('a[href="engineering-resources.html"]');
-    if (!resourceLink) {
-      resourceLink = document.createElement('a');
-      resourceLink.href = 'engineering-resources.html';
-      const qualityLink = links.querySelector('a[href="quality-testing.html"]');
-      if (qualityLink) qualityLink.after(resourceLink);
-      else {
-        const ctaLink = links.querySelector('.cta');
-        if (ctaLink) links.insertBefore(resourceLink, ctaLink);
-        else links.append(resourceLink);
+    if (!links.classList.contains('architectureNav')) {
+      let resourceLink = links.querySelector('a[href="engineering-resources.html"]');
+      if (!resourceLink) {
+        resourceLink = document.createElement('a');
+        resourceLink.href = 'engineering-resources.html';
+        const qualityLink = links.querySelector('a[href="quality-testing.html"]');
+        if (qualityLink) qualityLink.after(resourceLink);
+        else {
+          const ctaLink = links.querySelector('.cta');
+          if (ctaLink) links.insertBefore(resourceLink, ctaLink);
+          else links.append(resourceLink);
+        }
       }
+      resourceLink.textContent = 'Resources';
     }
-    resourceLink.textContent = 'Resources';
     const button = document.createElement('button');
     button.className = 'mobileMenuToggle';
     button.type = 'button';
