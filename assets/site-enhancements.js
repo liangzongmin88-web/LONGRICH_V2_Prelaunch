@@ -119,10 +119,43 @@
     loadAnalytics();
     window.gtag('event', eventName, params);
   };
+  const trackBeforeNavigation = (eventName, params = {}) => new Promise(resolve => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    track(eventName, { ...params, event_callback: done, event_timeout: 2000 });
+    window.setTimeout(done, 2200);
+  });
 
   const queryParams = new URLSearchParams(window.location.search);
   const requestedModel = queryParams.get('model')?.trim() || '';
   const sourcePage = queryParams.get('source_page')?.trim() || document.referrer || '';
+  const attributionKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'msclkid'];
+  let attribution = {};
+  try {
+    attribution = JSON.parse(window.sessionStorage.getItem('longrich_attribution') || '{}');
+    attributionKeys.forEach(key => {
+      const value = queryParams.get(key)?.trim();
+      if (value) attribution[key] = value;
+    });
+    attribution.landing_page ||= window.location.href;
+    attribution.referrer ||= document.referrer || '';
+    const referrerHost = attribution.referrer ? new URL(attribution.referrer).hostname : '';
+    if (!attribution.utm_source && /(^|\.)google\./i.test(referrerHost)) {
+      attribution.utm_source = 'google';
+      attribution.utm_medium = 'organic';
+    }
+    window.sessionStorage.setItem('longrich_attribution', JSON.stringify(attribution));
+  } catch {
+    attribution = Object.fromEntries(attributionKeys.map(key => [key, queryParams.get(key)?.trim() || '']).filter(([, value]) => value));
+    attribution.landing_page = window.location.href;
+    attribution.referrer = document.referrer || '';
+  }
+  const gaClientId = (document.cookie.match(/(?:^|;\s*)_ga=GA\d+\.\d+\.([^;]+)/) || [])[1] || '';
+  const debugMode = queryParams.get('ga_debug') === '1';
   let leadReference = queryParams.get('lead_ref')?.trim() || '';
   try {
     leadReference ||= window.sessionStorage.getItem('longrich_lead_ref') || '';
@@ -138,12 +171,26 @@
     lead_reference: leadReference,
     product_model: pageModel,
     source_page: sourcePage || window.location.pathname,
+    landing_page: attribution.landing_page || window.location.href,
+    referrer: attribution.referrer || '',
+    source: attribution.utm_source || '',
+    medium: attribution.utm_medium || '',
+    ga_client_id: gaClientId,
+    debug_mode: debugMode || undefined,
+    ...attribution,
     page_location: window.location.href,
     ...extra,
   });
 
   if (/\/request-a-quote\.html$/.test(window.location.pathname)) {
     track('generate_lead_view', funnelParams({ funnel_step: 'rfq_view' }));
+    if (queryParams.get('topic') === 'sample') {
+      track('sample_request', funnelParams({
+        cta_type: 'sample',
+        product_interest: requestedModel,
+        funnel_step: 'sample_request_view',
+      }));
+    }
   }
 
   const nav = document.querySelector('.nav');
@@ -299,6 +346,87 @@
     });
   });
 
+  document.querySelectorAll('.onlineRfqForm, .onlineContactForm').forEach(form => {
+    const status = form.querySelector('.rfqStatus');
+    const button = form.querySelector('.rfqSubmit');
+    const setStatus = (message, type) => {
+      if (!status) return;
+      status.textContent = message;
+      status.className = `rfqStatus full isVisible ${type}`;
+    };
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const isContactForm = form.classList.contains('onlineContactForm');
+      const formData = new FormData(form);
+      const productInterest = String(formData.get('Product Interest') || formData.get('Product / Model') || requestedModel || '');
+      const ctaSource = isContactForm ? 'contact_form' : (queryParams.get('topic') === 'sample' ? 'sample_form' : 'quote_form');
+      const values = {
+        utm_source: attribution.utm_source || '',
+        utm_medium: attribution.utm_medium || '',
+        utm_campaign: attribution.utm_campaign || '',
+        landing_page: attribution.landing_page || window.location.href,
+        referrer: attribution.referrer || '',
+        cta_source: ctaSource,
+        product_interest: productInterest,
+      };
+      Object.entries(values).forEach(([name, value]) => {
+        const input = form.elements.namedItem(name);
+        if (input) input.value = value;
+      });
+      const leadInput = form.elements.namedItem('Lead Reference');
+      const sourceInput = form.elements.namedItem('Source Page');
+      if (leadInput) leadInput.value = leadReference;
+      if (sourceInput) sourceInput.value = sourcePage || window.location.href;
+      const submission = Object.fromEntries(new FormData(form).entries());
+      submission['Form Type'] = isContactForm ? 'contact' : 'rfq';
+      submission['Submission ID'] = `SUB-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+      submission['GA Client ID'] = gaClientId;
+      if (isContactForm) {
+        submission['Target Market'] = submission['Country / Region'] || '';
+        submission['Project Details'] = submission.Message || '';
+      }
+      const originalLabel = button?.textContent || 'Submit';
+      if (button) { button.disabled = true; button.textContent = 'Submitting…'; }
+      setStatus('Submitting your inquiry securely…', 'success');
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(submission),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Submission failed');
+        const reference = result.reference || leadReference;
+        const eventName = isContactForm ? 'contact_form_submit' : 'quote_request';
+        await trackBeforeNavigation(eventName, funnelParams({
+          form_type: isContactForm ? 'contact' : 'rfq',
+          cta_type: ctaSource,
+          product_interest: productInterest,
+          submission_id: submission['Submission ID'],
+          funnel_step: 'lead_confirmed',
+        }));
+        try {
+          window.sessionStorage.setItem(`longrich_confirmed_lead_${reference}`, 'pending');
+          window.sessionStorage.setItem(`longrich_confirmed_lead_data_${reference}`, JSON.stringify({
+            form_type: isContactForm ? 'contact' : 'rfq', cta_type: ctaSource,
+            product_interest: productInterest, submission_id: submission['Submission ID'], ...attribution,
+          }));
+        } catch {}
+        const thankYouUrl = new URL('/thank-you.html', window.location.origin);
+        thankYouUrl.searchParams.set('ref', reference);
+        thankYouUrl.searchParams.set('form', isContactForm ? 'contact' : 'rfq');
+        if (debugMode) thankYouUrl.searchParams.set('ga_debug', '1');
+        window.location.assign(thankYouUrl.href);
+      } catch (error) {
+        setStatus('We could not submit this inquiry. Please try again or contact sales directly.', 'error');
+        track('lead_submit_error', funnelParams({ form_type: isContactForm ? 'contact' : 'rfq', error_message: String(error?.message || 'Submission failed').slice(0, 120) }));
+      } finally {
+        if (button) { button.disabled = false; button.textContent = originalLabel; }
+      }
+    });
+  });
+
   if (requestedModel) {
     document.querySelectorAll('[name="Product / Model"]').forEach(input => {
       if (!input.value) input.value = requestedModel;
@@ -341,9 +469,11 @@
     }
     link.addEventListener('click', () => {
       if (link.href.startsWith('mailto:')) {
-        track('contact_click', funnelParams({ method: 'email', link_url: link.href.split('?')[0], funnel_step: 'contact_click' }));
+        track('email_click', funnelParams({ cta_type: 'email', link_url: link.href.split('?')[0], funnel_step: 'contact_click' }));
       } else if (link.href.startsWith(whatsappBaseUrl)) {
-        track('contact_click', funnelParams({ method: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
+        track('whatsapp_click', funnelParams({ cta_type: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
+      } else if (/request-a-quote\.html/.test(link.href) && new URL(link.href).searchParams.get('topic') === 'sample') {
+        track('sample_request', funnelParams({ cta_type: 'sample', link_url: link.href, product_interest: new URL(link.href).searchParams.get('model') || pageModel, funnel_step: 'sample_click' }));
       } else if (/request-a-quote\.html(?:$|[?#])/.test(link.href)) {
         track('begin_lead', funnelParams({ method: 'rfq_page', link_url: link.href, funnel_step: 'rfq_click' }));
       }
@@ -359,7 +489,7 @@
     link.rel = 'noopener noreferrer';
     link.textContent = 'Open WhatsApp Chat →';
     link.addEventListener('click', () => {
-      track('contact_click', funnelParams({ method: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
+      track('whatsapp_click', funnelParams({ cta_type: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
     });
     panel.append(link);
   });
