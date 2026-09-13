@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,follow"><title>Inquiry Received | LONGRICH Power Solutions</title>
+<meta name="description" content="Your inquiry has been received by LONGRICH Power Solutions.">
+<link rel="canonical" href="https://www.longrichpower.com/thank-you.html">
+<link rel="stylesheet" href="/assets/site-enhancements.css?v=13"><script src="/assets/site-enhancements.js?v=13" defer></script>
+<style>*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#0f172a;background:#f5f7fa;line-height:1.6}.confirmation{display:grid;min-height:100vh;place-items:center;padding:48px 16px}.card{width:min(760px,100%);padding:clamp(30px,6vw,56px);border:1px solid #e2e8f0;border-radius:28px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.08)}.mark{display:grid;width:52px;height:52px;place-items:center;border-radius:50%;background:#e9f2ff;color:#0b63f6;font-size:28px;font-weight:900}h1{margin:20px 0 14px;color:#0c2f63;font-size:clamp(36px,7vw,58px);line-height:1}.reference{display:inline-block;padding:9px 12px;border-radius:9px;background:#f5f7fa;font-family:monospace}</style>
+</head><body><main class="confirmation"><section class="card"><div class="mark" aria-hidden="true">✓</div><h1>Thank you. Your request is in.</h1><p>Our sales team will review the product, market and project details you submitted.</p><p>Your reference:</p><div class="reference" id="lead-reference">Pending</div></section></main>
+<script>window.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search);const r=p.get('ref')||'';document.getElementById('lead-reference').textContent=r||'Available in your confirmation email';if(!r)return;const k=`longrich_confirmed_lead_${r}`;try{if(sessionStorage.getItem(k)!=='pending')return;sessionStorage.setItem(k,'tracked')}catch{return}let d={};try{d=JSON.parse(sessionStorage.getItem(`longrich_confirmed_lead_data_${r}`)||'{}')}catch{}window.gtag&&window.gtag('event','generate_lead',{...d,lead_reference:r,funnel_step:'lead_confirmed',debug_mode:p.get('ga_debug')==='1'||undefined})});</script>
+</body></html>
