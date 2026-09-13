@@ -41,7 +41,7 @@
     alternateName: ['LONGRICH', 'LongRich Power Solutions', 'Dongguan LongRich Electronic'],
     url: 'https://www.longrichpower.com/',
     foundingDate: '2002',
-    email: 'sales7@cnlongrich.com',
+    email: 'sales@longrichpower.com',
     description: 'B2B manufacturer of travel adapters, voltage converters, power strips and related power products, with OEM/ODM engineering, testing and production capabilities.',
     industry: 'Electrical and electronic product manufacturing',
     address: {
@@ -334,7 +334,7 @@
       }
       const subject = `[${leadReference}] ${form.dataset.subject || 'LONGRICH Website Inquiry'}`;
       lines.unshift(`Lead reference: ${leadReference}`, `Source page: ${sourcePage || window.location.href}`);
-      const href = `mailto:sales7@cnlongrich.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n\n'))}`;
+      const href = `mailto:sales@longrichpower.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n\n'))}`;
       track('generate_lead', funnelParams({
         method: 'rfq_email',
         product_model: String(data.get('Product / Model') || ''),
