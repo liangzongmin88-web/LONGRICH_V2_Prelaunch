@@ -4,7 +4,7 @@ import path from 'node:path';
 const root=process.cwd();
 const origin='https://www.longrichpower.com';
 const walk=directory=>fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry=>{
-  if(['assets','scripts','.git','.github','.vercel'].includes(entry.name)) return [];
+  if(['assets','scripts','.git','.github','.vercel'].includes(entry.name)||entry.name.startsWith('LONGRICH_Website_Package_')) return [];
   const full=path.join(directory,entry.name);
   return entry.isDirectory()?walk(full):entry.name.endsWith('.html')?[full]:[];
 });

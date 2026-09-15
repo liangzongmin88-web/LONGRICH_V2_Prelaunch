@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env*
+.vercel
+*.md
+*.csv
+SEO_LIVE_AUDIT_*.json
+scripts
+LONGRICH_Website_Package_*

@@ -1,0 +1,175 @@
+.solutionSection {
+  padding: 82px 0;
+}
+
+.caseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.caseCard {
+  display: flex;
+  min-height: 320px;
+  padding: 26px;
+  flex-direction: column;
+  border: 1px solid #d5dde7;
+  border-radius: 22px;
+  background: #fff;
+  color: #0f172a;
+  text-decoration: none;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, .055);
+}
+
+.caseCard .caseType {
+  color: #0047b3;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: .1em;
+}
+
+.caseCard h3 {
+  margin: 12px 0 10px;
+  font-size: 25px;
+  letter-spacing: -.03em;
+}
+
+.caseCard p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.caseCard .caseLink {
+  margin-top: auto;
+  color: #0047b3;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.caseStudy {
+  padding: 74px 0;
+}
+
+.caseStudy article {
+  max-width: 920px;
+}
+
+.caseStudy h1 {
+  margin: 12px 0 18px;
+  font-size: clamp(42px, 6vw, 68px);
+  line-height: 1;
+  letter-spacing: -.05em;
+}
+
+.caseStudy .lede {
+  color: #475569;
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+.caseMeta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 30px 0;
+}
+
+.caseMeta div {
+  padding: 18px;
+  border: 1px solid #d5dde7;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.caseMeta small {
+  display: block;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.caseMeta strong {
+  display: block;
+  margin-top: 6px;
+}
+
+.caseBody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.caseBody section {
+  padding: 26px;
+  border: 1px solid #d5dde7;
+  border-radius: 20px;
+}
+
+.caseBody h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+
+.caseBody p,
+.caseBody li {
+  color: #475569;
+  line-height: 1.7;
+}
+
+.caseDisclosure {
+  margin-top: 28px;
+  padding: 18px;
+  border-left: 4px solid #0757d8;
+  background: #f1f6ff;
+  color: #334155;
+  font-size: 13px;
+}
+
+.caseStudy .buyerActions a {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 18px;
+  border: 1px solid #0f172a;
+  border-radius: 10px;
+  background: #fff;
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.caseStudy .buyerActions a:first-child {
+  border-color: #0757d8;
+  background: #0757d8;
+  color: #fff;
+}
+
+@media (max-width: 980px) {
+  .caseGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .caseMeta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .solutionSection,
+  .caseStudy {
+    padding: 58px 0;
+  }
+
+  .caseStudy h1 {
+    font-size: 42px;
+  }
+
+  .caseMeta,
+  .caseBody {
+    grid-template-columns: 1fr;
+  }
+}

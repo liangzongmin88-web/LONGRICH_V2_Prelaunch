@@ -1,11 +1,49 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,follow"><title>Inquiry Received | LONGRICH Power Solutions</title>
-<meta name="description" content="Your inquiry has been received by LONGRICH Power Solutions.">
-<link rel="canonical" href="https://www.longrichpower.com/thank-you.html">
-<link rel="stylesheet" href="/assets/site-enhancements.css?v=13"><script src="/assets/site-enhancements.js?v=13" defer></script>
-<style>*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#0f172a;background:#f5f7fa;line-height:1.6}.confirmation{display:grid;min-height:100vh;place-items:center;padding:48px 16px}.card{width:min(760px,100%);padding:clamp(30px,6vw,56px);border:1px solid #e2e8f0;border-radius:28px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.08)}.mark{display:grid;width:52px;height:52px;place-items:center;border-radius:50%;background:#e9f2ff;color:#0b63f6;font-size:28px;font-weight:900}h1{margin:20px 0 14px;color:#0c2f63;font-size:clamp(36px,7vw,58px);line-height:1}.reference{display:inline-block;padding:9px 12px;border-radius:9px;background:#f5f7fa;font-family:monospace}</style>
-</head><body><main class="confirmation"><section class="card"><div class="mark" aria-hidden="true">✓</div><h1>Thank you. Your request is in.</h1><p>Our sales team will review the product, market and project details you submitted.</p><p>Your reference:</p><div class="reference" id="lead-reference">Pending</div></section></main>
-<script>window.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search);const r=p.get('ref')||'';document.getElementById('lead-reference').textContent=r||'Available in your confirmation email';if(!r)return;const k=`longrich_confirmed_lead_${r}`;try{if(sessionStorage.getItem(k)!=='pending')return;sessionStorage.setItem(k,'tracked')}catch{return}let d={};try{d=JSON.parse(sessionStorage.getItem(`longrich_confirmed_lead_data_${r}`)||'{}')}catch{}window.gtag&&window.gtag('event','generate_lead',{...d,lead_reference:r,funnel_step:'lead_confirmed',debug_mode:p.get('ga_debug')==='1'||undefined})});</script>
-</body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <title>Inquiry Received | LONGRICH Power Solutions</title>
+  <meta name="description" content="Your inquiry has been received by LONGRICH Power Solutions.">
+  <link rel="canonical" href="https://www.longrichpower.com/thank-you.html">
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site-enhancements.css?v=14">
+  <script src="/assets/site-enhancements.js?v=14" defer></script>
+  <style>
+    :root{--ink:#0f172a;--muted:#64748b;--blue:#0b63f6;--navy:#0c2f63;--line:#e2e8f0;--soft:#f5f7fa}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--soft);line-height:1.6}.wrap{width:min(760px,calc(100% - 32px));margin:auto}.confirmation{display:grid;min-height:100vh;place-items:center;padding:48px 0}.card{width:100%;padding:clamp(30px,6vw,56px);border:1px solid var(--line);border-radius:28px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.08)}.mark{display:grid;width:52px;height:52px;place-items:center;border-radius:50%;background:#e9f2ff;color:var(--blue);font-size:28px;font-weight:900}.eyebrow{margin-top:24px;color:#0047b3;font-size:12px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}h1{margin:8px 0 14px;color:var(--navy);font-size:clamp(36px,7vw,58px);line-height:1;letter-spacing:-.045em}p{color:var(--muted)}.reference{display:inline-block;margin:10px 0 24px;padding:9px 12px;border-radius:9px;background:var(--soft);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px}.actions{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:12px 18px;border:1px solid var(--navy);border-radius:10px;color:var(--navy);background:#fff;text-decoration:none;font-weight:800}.btn.primary{color:#fff;background:var(--blue);border-color:var(--blue)}
+  </style>
+</head>
+<body>
+  <main class="confirmation">
+    <div class="wrap"><section class="card" aria-labelledby="confirmation-title">
+      <div class="mark" aria-hidden="true">✓</div>
+      <div class="eyebrow">INQUIRY RECEIVED</div>
+      <h1 id="confirmation-title">Thank you. Your request is in.</h1>
+      <p>Our sales team will review the product, market and project details you submitted.</p>
+      <p>Your reference:</p><div class="reference" id="lead-reference">Pending</div>
+      <div class="actions"><a class="btn primary" href="/products.html">Explore Products</a><a class="btn" href="/manufacturing.html">Review Our Factory</a></div>
+    </section></div>
+  </main>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const reference = params.get('ref') || '';
+      const formType = params.get('form') === 'contact' ? 'contact' : 'rfq';
+      document.getElementById('lead-reference').textContent = reference || 'Available in your confirmation email';
+      if (!reference) return;
+      const storageKey = `longrich_confirmed_lead_${reference}`;
+      try {
+        if (window.sessionStorage.getItem(storageKey) !== 'pending') return;
+        window.sessionStorage.setItem(storageKey, 'tracked');
+      } catch { return; }
+      let eventData = {};
+      try {
+        eventData = JSON.parse(window.sessionStorage.getItem(`longrich_confirmed_lead_data_${reference}`) || '{}');
+      } catch {}
+      window.gtag && window.gtag('event', 'generate_lead', {...eventData,method:eventData.method || (formType === 'contact' ? 'online_contact' : 'online_rfq'),form_type:formType,lead_reference:reference,funnel_step:'lead_confirmed'});
+    });
+  </script>
+</body>
+</html>

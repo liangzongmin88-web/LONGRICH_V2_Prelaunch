@@ -3,19 +3,14 @@ const ALLOWED_FIELDS = [
   'Name', 'Company', 'Business Email', 'Phone / WhatsApp', 'Product / Model',
   'Estimated Quantity', 'Target Market', 'Required Timeline', 'Project Details',
   'Lead Reference', 'Source Page', 'Form Type', 'Country / Region',
-  'Product Interest', 'Message', 'Submission ID', 'GA Client ID',
-  'utm_source', 'utm_medium', 'utm_campaign', 'landing_page', 'referrer',
-  'cta_source', 'product_interest',
+  'Product Interest', 'Message',
+  'Submission ID', 'GA Client ID', 'UTM Source', 'UTM Medium', 'UTM Campaign',
+  'UTM Term', 'UTM Content', 'Google Click ID', 'Microsoft Click ID',
+  'First Touch URL', 'First Referrer',
 ];
 
 function clean(value, maxLength = 3000) {
   return String(value || '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, maxLength);
-}
-
-function escapeHtml(value) {
-  return String(value).replace(/[&<>'"]/g, character => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
-  })[character]);
 }
 
 module.exports = async function handler(request, response) {
@@ -24,6 +19,7 @@ module.exports = async function handler(request, response) {
     response.setHeader('Allow', 'POST');
     return response.status(405).json({ error: 'Method not allowed' });
   }
+
   if (Number(request.headers['content-length'] || 0) > 30000) {
     return response.status(413).json({ error: 'Request is too large.' });
   }
@@ -39,6 +35,7 @@ module.exports = async function handler(request, response) {
 
   const body = request.body && typeof request.body === 'object' ? request.body : {};
   if (clean(body.website)) return response.status(200).json({ ok: true });
+
   const name = clean(body.Name, 120);
   const company = clean(body.Company, 160);
   const email = clean(body['Business Email'], 254).toLowerCase();
@@ -56,10 +53,14 @@ module.exports = async function handler(request, response) {
   if (!process.env.RESEND_API_KEY || !fromEmail || !EMAIL_PATTERN.test(toEmail)) {
     return response.status(503).json({ error: 'RFQ delivery is not configured.' });
   }
-  const fields = ALLOWED_FIELDS.map(key => [key, clean(body[key])]).filter(([, value]) => value);
+
+  const fields = ALLOWED_FIELDS
+    .map(key => [key, clean(body[key])])
+    .filter(([, value]) => value);
   const html = fields.map(([key, value]) => `<tr><th style="padding:8px;text-align:left;vertical-align:top">${escapeHtml(key)}</th><td style="padding:8px">${escapeHtml(value)}</td></tr>`).join('');
   const formType = isContactForm ? 'Website inquiry' : 'Website RFQ';
   const model = clean(body['Product / Model'] || (isContactForm ? body['Product Interest'] : ''), 120) || 'Product to be confirmed';
+  const quantity = clean(body['Estimated Quantity'], 120) || 'To be confirmed';
   let resendResponse;
   try {
     resendResponse = await fetch('https://api.resend.com/emails/batch', {
@@ -71,17 +72,36 @@ module.exports = async function handler(request, response) {
         'User-Agent': 'LONGRICH-RFQ/1.0',
       },
       body: JSON.stringify([
-        { from: fromEmail, to: [toEmail], reply_to: email, subject: `[${reference}] ${formType} — ${model}`, html: `<h2>New LONGRICH ${escapeHtml(formType.toLowerCase())}</h2><table style="border-collapse:collapse">${html}</table>` },
-        { from: fromEmail, to: [email], reply_to: toEmail, subject: `We received your LONGRICH inquiry — ${reference}`, html: `<h2>Thank you, ${escapeHtml(name)}.</h2><p>We received your inquiry and our sales team will review the project details.</p><p>Reference: ${escapeHtml(reference)}</p><p>LONGRICH Power Solutions</p>` },
+      {
+        from: fromEmail,
+        to: [toEmail],
+        reply_to: email,
+        subject: `[${reference}] ${formType} — ${model}`,
+        html: `<h2>New LONGRICH ${escapeHtml(formType.toLowerCase())}</h2><table style="border-collapse:collapse">${html}</table>`,
+      },
+      {
+        from: fromEmail,
+        to: [email],
+        reply_to: toEmail,
+        subject: `We received your LONGRICH RFQ — ${reference}`,
+        html: `<h2>Thank you, ${escapeHtml(name)}.</h2><p>We received your inquiry and our sales team will review the project details.</p><table style="border-collapse:collapse"><tr><th style="padding:8px;text-align:left">Reference</th><td style="padding:8px">${escapeHtml(reference)}</td></tr><tr><th style="padding:8px;text-align:left">Product</th><td style="padding:8px">${escapeHtml(model)}</td></tr><tr><th style="padding:8px;text-align:left">MOQ / quantity</th><td style="padding:8px">${escapeHtml(quantity)}</td></tr><tr><th style="padding:8px;text-align:left">Target market</th><td style="padding:8px">${escapeHtml(market)}</td></tr></table><p>You can reply to this email if you need to add files or project information.</p><p>LONGRICH Power Solutions</p>`,
+      },
       ]),
     });
   } catch (error) {
     console.error('RFQ delivery network failure', error instanceof Error ? error.message : 'unknown');
     return response.status(502).json({ error: 'RFQ delivery failed.' });
   }
+
   if (!resendResponse.ok) {
     console.error('RFQ delivery failed', resendResponse.status, await resendResponse.text());
     return response.status(502).json({ error: 'RFQ delivery failed.' });
   }
   return response.status(200).json({ ok: true, reference });
-};
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+  })[character]);
+}

@@ -1,40 +1,41 @@
-# LONGRICH Lead Analytics Mapping — Phase 3.1B
-
-GA4 property: `LONGRICH Power Website`
+# GA4 → RFQ → Email → WhatsApp Mapping
 
 Measurement ID: `G-09MR5V2JWH`
 
-GTM: no container ID found in repository code; events use direct `gtag`.
+## Funnel events
 
-## Core events
+| Step | GA4 event | Meaning |
+|---|---|---|
+| Product/category CTA | `begin_lead` | Visitor clicked through to the RFQ page |
+| RFQ page | `generate_lead_view` | Visitor loaded the RFQ page |
+| RFQ attempt | `rfq_submit_attempt` | A valid online form was sent to the RFQ API |
+| RFQ delivered | `generate_lead` | The email provider accepted the inquiry and the visitor reached the verified thank-you state |
+| RFQ error | `rfq_submit_error` | The API or email provider rejected the submission |
+| Email handoff | `rfq_email_handoff` | A legacy email-preparation form opened the visitor's mail app; this is not a confirmed lead |
+| Direct contact | `contact_click` | Visitor opened Email or WhatsApp |
 
-| Event | Trigger | Required parameters | Verification state |
-|---|---|---|---|
-| `contact_form_submit` | Contact API returns success | `landing_page`, `cta_type`, `product_interest`, `source`, `medium`, `lead_reference`, `submission_id` | Pass — GA4 DebugView |
-| `quote_request` | RFQ API returns success | same as above | Pass — GA4 Realtime |
-| `sample_request` | RFQ page is opened with `topic=sample` or matching CTA is clicked | `landing_page`, `cta_type=sample`, `product_interest`, `source`, `medium` | Pass — GA4 DebugView |
-| `email_click` | Visitor clicks a `mailto:` link | `landing_page`, `cta_type=email`, `source`, `medium`, `link_url` | Pass — GA4 DebugView |
-| `whatsapp_click` | Visitor clicks a WhatsApp link | `landing_page`, `cta_type=whatsapp`, `source`, `medium`, `link_url` | Pass — GA4 DebugView |
+Every event now carries:
 
-Supporting events remain `begin_lead`, `generate_lead_view`, `generate_lead`, and `lead_submit_error`.
+- `lead_reference`
+- `product_model`
+- `source_page`
+- `page_location`
+- `ga_client_id`
+- `funnel_step`
+- `method` where applicable
+- available UTM values, `gclid` and `msclkid`
 
-## Attribution
+The same `lead_reference` is inserted into the email subject/body and the prefilled WhatsApp message. Every online submission also gets a unique `submission_id`, preventing a second valid inquiry in the same browser session from being treated as an email-provider retry. First-touch URL, first referrer, campaign identifiers and GA client ID are included with the sales inquiry so it can be reconciled with GA4.
 
-First-touch values are retained in `sessionStorage` and attached to events/forms:
+## GA4 administration still required
 
-- `utm_source`, `utm_medium`, `utm_campaign`
-- `landing_page`, `referrer`
-- `cta_source`, `product_interest`
-- `gclid`, `msclkid`, `ga_client_id`, `lead_reference`
+1. Register `lead_reference`, `submission_id`, `product_model`, `source_page`, `ga_client_id`, `funnel_step`, `method`, `form_type` and campaign fields as event-scoped custom dimensions.
+2. Mark `generate_lead` as a key event.
+3. Optionally mark `contact_click` as a key event, or report it separately as a softer conversion.
+4. Build a funnel exploration using `begin_lead` → `generate_lead_view` → `rfq_submit_attempt` → `generate_lead`; report `rfq_submit_error`, `rfq_email_handoff` and `contact_click` as separate branches.
 
-When the first referrer host is Google and no UTM source is present, the browser records `source=google` and `medium=organic`. The form sends the same attribution values to the RFQ delivery email, allowing later manual reconciliation by `lead_reference`.
+The provider acceptance confirms the website-to-email handoff. A human reply, WhatsApp conversation or won order still requires inbox/CRM status joined by `lead_reference`.
 
-## Data flow
+## Production environment required
 
-`Browser → /api/rfq → Resend batch email → sales inbox + visitor confirmation → thank-you page → GA4 generate_lead`
-
-No HubSpot API call exists in this code path. A connected HubSpot portal was found, but the website-to-HubSpot delivery path has not been implemented or proven.
-
-## Privacy follow-up
-
-Attribution fields are not identity data alone, but become combined visitor-behavior and identity data when sent with name, email, company, or phone. Confirm whether the privacy policy/consent flow needs updating for visitor regions such as the EU before expanding retention or CRM synchronization.
+The Vercel project must define `RESEND_API_KEY`, `RFQ_FROM_EMAIL` using a verified sender domain, and `RFQ_TO_EMAIL`. Keep these values in Vercel; do not commit them to the repository.

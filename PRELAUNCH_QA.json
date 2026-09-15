@@ -1,10 +1,10 @@
 {
-  "version": "V6.0-30-PRODUCTS-US-PRIORITY",
-  "html_pages": 45,
+  "version": "V6.1-MOBILE-PRODUCT-WHATSAPP",
+  "html_pages": 65,
   "internal_links_and_images_checked": 658,
   "missing_internal_references": [],
   "product_models": 30,
-  "sitemap_urls": 44,
+  "sitemap_urls": 79,
   "new_detail_pages": 17,
   "ordering_policy": "US-market configurations first within each category"
 }

@@ -72,7 +72,7 @@
   });
   document.head.append(entityScript);
 
-  if (footer && !footer.querySelector('a[href="company-identity.html"]')) {
+  if (footer && !footer.querySelector('a[href$="company-identity.html"]')) {
     const identityLink = document.createElement('a');
     identityLink.href = 'company-identity.html';
     identityLink.textContent = 'Company Identity';
@@ -119,16 +119,6 @@
     loadAnalytics();
     window.gtag('event', eventName, params);
   };
-  const trackBeforeNavigation = (eventName, params = {}) => new Promise(resolve => {
-    let settled = false;
-    const done = () => {
-      if (settled) return;
-      settled = true;
-      resolve();
-    };
-    track(eventName, { ...params, event_callback: done, event_timeout: 2000 });
-    window.setTimeout(done, 2200);
-  });
 
   const queryParams = new URLSearchParams(window.location.search);
   const requestedModel = queryParams.get('model')?.trim() || '';
@@ -141,21 +131,13 @@
       const value = queryParams.get(key)?.trim();
       if (value) attribution[key] = value;
     });
-    attribution.landing_page ||= window.location.href;
-    attribution.referrer ||= document.referrer || '';
-    const referrerHost = attribution.referrer ? new URL(attribution.referrer).hostname : '';
-    if (!attribution.utm_source && /(^|\.)google\./i.test(referrerHost)) {
-      attribution.utm_source = 'google';
-      attribution.utm_medium = 'organic';
-    }
+    attribution.first_touch_url ||= window.location.href;
+    attribution.first_referrer ||= document.referrer || '';
     window.sessionStorage.setItem('longrich_attribution', JSON.stringify(attribution));
   } catch {
     attribution = Object.fromEntries(attributionKeys.map(key => [key, queryParams.get(key)?.trim() || '']).filter(([, value]) => value));
-    attribution.landing_page = window.location.href;
-    attribution.referrer = document.referrer || '';
   }
   const gaClientId = (document.cookie.match(/(?:^|;\s*)_ga=GA\d+\.\d+\.([^;]+)/) || [])[1] || '';
-  const debugMode = queryParams.get('ga_debug') === '1';
   let leadReference = queryParams.get('lead_ref')?.trim() || '';
   try {
     leadReference ||= window.sessionStorage.getItem('longrich_lead_ref') || '';
@@ -171,12 +153,7 @@
     lead_reference: leadReference,
     product_model: pageModel,
     source_page: sourcePage || window.location.pathname,
-    landing_page: attribution.landing_page || window.location.href,
-    referrer: attribution.referrer || '',
-    source: attribution.utm_source || '',
-    medium: attribution.utm_medium || '',
     ga_client_id: gaClientId,
-    debug_mode: debugMode || undefined,
     ...attribution,
     page_location: window.location.href,
     ...extra,
@@ -184,13 +161,6 @@
 
   if (/\/request-a-quote\.html$/.test(window.location.pathname)) {
     track('generate_lead_view', funnelParams({ funnel_step: 'rfq_view' }));
-    if (queryParams.get('topic') === 'sample') {
-      track('sample_request', funnelParams({
-        cta_type: 'sample',
-        product_interest: requestedModel,
-        funnel_step: 'sample_request_view',
-      }));
-    }
   }
 
   const nav = document.querySelector('.nav');
@@ -303,6 +273,50 @@
     }
   });
 
+  /* Mobile product discovery: let the product image open the same detail page
+     as its explicit View Details control, without changing desktop behavior. */
+  const mobileViewport = window.matchMedia('(max-width: 980px)');
+  const productMediaTargets = [...document.querySelectorAll('.productCard .productMedia, .card .media')]
+    .map(media => {
+      const card = media.closest('.productCard, .card');
+      const detailLink = card?.querySelector('.productCardCta, .body a.btn[href]');
+      if (!detailLink || media.closest('a')) return null;
+      return { media, detailLink };
+    })
+    .filter(Boolean);
+
+  const syncMobileProductMedia = () => {
+    productMediaTargets.forEach(({ media, detailLink }) => {
+      if (mobileViewport.matches) {
+        const model = media.querySelector('img')?.alt || media.closest('.productCard, .card')?.querySelector('h2, h3')?.textContent || 'product';
+        media.classList.add('mobileProductMediaLink');
+        media.setAttribute('role', 'link');
+        media.setAttribute('tabindex', '0');
+        media.setAttribute('aria-label', `View ${model} product details`);
+        media.dataset.mobileDetailHref = detailLink.href;
+      } else {
+        media.classList.remove('mobileProductMediaLink');
+        media.removeAttribute('role');
+        media.removeAttribute('tabindex');
+        media.removeAttribute('aria-label');
+        delete media.dataset.mobileDetailHref;
+      }
+    });
+  };
+  productMediaTargets.forEach(({ media }) => {
+    const openProduct = event => {
+      if (!mobileViewport.matches || !media.dataset.mobileDetailHref) return;
+      if (event.type === 'keydown' && !['Enter', ' '].includes(event.key)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      window.location.assign(media.dataset.mobileDetailHref);
+    };
+    media.addEventListener('click', openProduct);
+    media.addEventListener('keydown', openProduct);
+  });
+  syncMobileProductMedia();
+  mobileViewport.addEventListener('change', syncMobileProductMedia);
+
   const grid = document.querySelector('#featured .productGrid');
   if (grid && cards.some(card => card.classList.contains('productCardExtra'))) {
     const actions = document.createElement('div');
@@ -335,7 +349,7 @@
       const subject = `[${leadReference}] ${form.dataset.subject || 'LONGRICH Website Inquiry'}`;
       lines.unshift(`Lead reference: ${leadReference}`, `Source page: ${sourcePage || window.location.href}`);
       const href = `mailto:sales@longrichpower.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n\n'))}`;
-      track('generate_lead', funnelParams({
+      track('rfq_email_handoff', funnelParams({
         method: 'rfq_email',
         product_model: String(data.get('Product / Model') || ''),
         target_market: String(data.get('Target Market') || ''),
@@ -357,72 +371,83 @@
     form.addEventListener('submit', async event => {
       event.preventDefault();
       if (!form.reportValidity()) return;
-      const isContactForm = form.classList.contains('onlineContactForm');
-      const formData = new FormData(form);
-      const productInterest = String(formData.get('Product Interest') || formData.get('Product / Model') || requestedModel || '');
-      const ctaSource = isContactForm ? 'contact_form' : (queryParams.get('topic') === 'sample' ? 'sample_form' : 'quote_form');
-      const values = {
-        utm_source: attribution.utm_source || '',
-        utm_medium: attribution.utm_medium || '',
-        utm_campaign: attribution.utm_campaign || '',
-        landing_page: attribution.landing_page || window.location.href,
-        referrer: attribution.referrer || '',
-        cta_source: ctaSource,
-        product_interest: productInterest,
-      };
-      Object.entries(values).forEach(([name, value]) => {
-        const input = form.elements.namedItem(name);
-        if (input) input.value = value;
-      });
-      const leadInput = form.elements.namedItem('Lead Reference');
-      const sourceInput = form.elements.namedItem('Source Page');
+      const leadInput = form.querySelector('[name="Lead Reference"]');
+      const sourceInput = form.querySelector('[name="Source Page"]');
       if (leadInput) leadInput.value = leadReference;
       if (sourceInput) sourceInput.value = sourcePage || window.location.href;
-      const submission = Object.fromEntries(new FormData(form).entries());
-      submission['Form Type'] = isContactForm ? 'contact' : 'rfq';
-      submission['Submission ID'] = `SUB-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-      submission['GA Client ID'] = gaClientId;
-      if (isContactForm) {
-        submission['Target Market'] = submission['Country / Region'] || '';
-        submission['Project Details'] = submission.Message || '';
+      const originalLabel = button?.textContent || 'Submit RFQ Online';
+      const submissionId = `SUB-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Submitting…';
       }
-      const originalLabel = button?.textContent || 'Submit';
-      if (button) { button.disabled = true; button.textContent = 'Submitting…'; }
-      setStatus('Submitting your inquiry securely…', 'success');
+      setStatus('Submitting your RFQ securely…', 'success');
       try {
+        const submission = Object.fromEntries(new FormData(form).entries());
+        const isContactForm = form.classList.contains('onlineContactForm');
+        if (isContactForm) {
+          submission['Form Type'] = 'contact';
+          submission['Target Market'] = submission['Country / Region'] || '';
+          submission['Product / Model'] = submission['Product / Model'] || submission['Product Interest'] || '';
+          submission['Project Details'] = submission.Message || '';
+        } else {
+          submission['Form Type'] = 'rfq';
+        }
+        submission['Submission ID'] = submissionId;
+        submission['GA Client ID'] = gaClientId;
+        submission['UTM Source'] = attribution.utm_source || '';
+        submission['UTM Medium'] = attribution.utm_medium || '';
+        submission['UTM Campaign'] = attribution.utm_campaign || '';
+        submission['UTM Term'] = attribution.utm_term || '';
+        submission['UTM Content'] = attribution.utm_content || '';
+        submission['Google Click ID'] = attribution.gclid || '';
+        submission['Microsoft Click ID'] = attribution.msclkid || '';
+        submission['First Touch URL'] = attribution.first_touch_url || '';
+        submission['First Referrer'] = attribution.first_referrer || '';
+        track('rfq_submit_attempt', funnelParams({
+          method: isContactForm ? 'online_contact' : 'online_rfq',
+          form_type: isContactForm ? 'contact' : 'rfq',
+          submission_id: submissionId,
+          product_model: submission['Product / Model'] || '',
+          funnel_step: 'lead_submit_attempt',
+        }));
         const response = await fetch(form.action, {
           method: 'POST',
-          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
           body: JSON.stringify(submission),
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || 'Submission failed');
         const reference = result.reference || leadReference;
-        const eventName = isContactForm ? 'contact_form_submit' : 'quote_request';
-        await trackBeforeNavigation(eventName, funnelParams({
-          form_type: isContactForm ? 'contact' : 'rfq',
-          cta_type: ctaSource,
-          product_interest: productInterest,
-          submission_id: submission['Submission ID'],
-          funnel_step: 'lead_confirmed',
-        }));
         try {
           window.sessionStorage.setItem(`longrich_confirmed_lead_${reference}`, 'pending');
           window.sessionStorage.setItem(`longrich_confirmed_lead_data_${reference}`, JSON.stringify({
-            form_type: isContactForm ? 'contact' : 'rfq', cta_type: ctaSource,
-            product_interest: productInterest, submission_id: submission['Submission ID'], ...attribution,
+            method: isContactForm ? 'online_contact' : 'online_rfq',
+            form_type: isContactForm ? 'contact' : 'rfq',
+            product_model: submission['Product / Model'] || '',
+            source_page: submission['Source Page'] || '',
+            submission_id: submissionId,
+            ga_client_id: gaClientId,
+            ...attribution,
           }));
         } catch {}
         const thankYouUrl = new URL('/thank-you.html', window.location.origin);
         thankYouUrl.searchParams.set('ref', reference);
         thankYouUrl.searchParams.set('form', isContactForm ? 'contact' : 'rfq');
-        if (debugMode) thankYouUrl.searchParams.set('ga_debug', '1');
         window.location.assign(thankYouUrl.href);
       } catch (error) {
-        setStatus('We could not submit this inquiry. Please try again or contact sales directly.', 'error');
-        track('lead_submit_error', funnelParams({ form_type: isContactForm ? 'contact' : 'rfq', error_message: String(error?.message || 'Submission failed').slice(0, 120) }));
+        setStatus('We could not submit the RFQ right now. Please try again, or contact sales@longrichpower.com.', 'error');
+        track('rfq_submit_error', funnelParams({
+          method: form.classList.contains('onlineContactForm') ? 'online_contact' : 'online_rfq',
+          submission_id: submissionId,
+          error_message: String(error?.message || 'Submission failed').slice(0, 120),
+          funnel_step: 'lead_submit_error',
+        }));
       } finally {
-        if (button) { button.disabled = false; button.textContent = originalLabel; }
+        if (button) {
+          button.disabled = false;
+          button.textContent = originalLabel;
+        }
       }
     });
   });
@@ -436,10 +461,43 @@
     });
   }
 
+  const topic = queryParams.get('topic')?.trim() || '';
+  if (topic) {
+    const prompts = {
+      moq: 'Please confirm MOQ for the selected model and customization scope. ',
+      'lead-time': 'Please confirm sample and mass-production lead time. ',
+      sample: 'I would like to request a product sample for evaluation. ',
+    };
+    document.querySelectorAll('[name="Project Details"]').forEach(input => {
+      if (!input.value && prompts[topic]) input.value = prompts[topic];
+    });
+  }
+
+  const productFile = window.location.pathname.split('/').pop() || '';
+  const productModel = Object.entries(productLinks).find(([, href]) => href === productFile)?.[0];
+  if (productModel && !document.querySelector('.procurementSection')) {
+    const rows = [...document.querySelectorAll('table tr')];
+    const findValue = labels => {
+      const row = rows.find(item => labels.some(label => (item.cells?.[0]?.textContent || '').trim().toLowerCase().includes(label)));
+      return row?.cells?.[1]?.textContent.trim() || '';
+    };
+    const moq = findValue(['moq']) || 'Confirmed by model and customization';
+    const compliance = findValue(['certification', 'compliance']) || 'Reviewed for final configuration and market';
+    const anchor = document.querySelector('.contact, footer, .footer');
+    if (anchor) {
+      const section = document.createElement('section');
+      section.className = 'procurementSection';
+      section.setAttribute('aria-label', `${productModel} purchasing information`);
+      section.innerHTML = `<div class="wrap"><div class="procurementHead"><div><span class="sectionLabel">PURCHASING INFORMATION</span><h2>Plan a ${productModel} sourcing project</h2></div><p>Commercial terms are confirmed against your destination market, configuration, branding scope and order plan.</p></div><div class="procurementFacts"><div class="procurementFact"><small>MOQ</small><strong>${moq}</strong><span>Custom logo, color and packaging may affect the minimum.</span></div><div class="procurementFact"><small>Lead time</small><strong>Quoted by project</strong><span>Sampling and mass production are scheduled separately after requirements are locked.</span></div><div class="procurementFact"><small>Capacity</small><strong>4M+ units / year</strong><span>Factory-wide capacity across 6 assembly lines and 2 SMT lines.</span></div><div class="procurementFact"><small>Compliance</small><strong>${compliance}</strong><span>Documentation applicability is verified for the final build and target market.</span></div><div class="procurementFact"><small>Samples</small><strong>Available on request</strong><span>Share evaluation scope, delivery country and required timing.</span></div></div><div class="buyerActions"><a href="/request-a-quote.html?model=${encodeURIComponent(productModel)}">Request pricing</a><a href="/request-a-quote.html?model=${encodeURIComponent(productModel)}&topic=sample">Request a sample</a></div></div>`;
+      anchor.before(section);
+    }
+  }
+
   const whatsappBaseUrl = 'https://wa.me/8618820000007';
+  const whatsappProductModel = pageModel || productModel || '';
   const whatsappMessage = [
     'Hello LONGRICH, I would like to discuss an OEM/ODM project.',
-    pageModel ? `Product / model: ${pageModel}` : '',
+    whatsappProductModel ? `Product / model: ${whatsappProductModel}` : '',
     `Lead reference: ${leadReference}`,
     `Source: ${window.location.href}`,
   ].filter(Boolean).join('\n');
@@ -469,16 +527,49 @@
     }
     link.addEventListener('click', () => {
       if (link.href.startsWith('mailto:')) {
-        track('email_click', funnelParams({ cta_type: 'email', link_url: link.href.split('?')[0], funnel_step: 'contact_click' }));
+        track('contact_click', funnelParams({ method: 'email', link_url: link.href.split('?')[0], funnel_step: 'contact_click' }));
       } else if (link.href.startsWith(whatsappBaseUrl)) {
-        track('whatsapp_click', funnelParams({ cta_type: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
-      } else if (/request-a-quote\.html/.test(link.href) && new URL(link.href).searchParams.get('topic') === 'sample') {
-        track('sample_request', funnelParams({ cta_type: 'sample', link_url: link.href, product_interest: new URL(link.href).searchParams.get('model') || pageModel, funnel_step: 'sample_click' }));
+        track('contact_click', funnelParams({ method: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
       } else if (/request-a-quote\.html(?:$|[?#])/.test(link.href)) {
         track('begin_lead', funnelParams({ method: 'rfq_page', link_url: link.href, funnel_step: 'rfq_click' }));
       }
     });
   });
+
+  /* On phones, quote and product-inquiry calls to action start a WhatsApp
+     conversation immediately. Their original RFQ destination is restored on
+     tablet/desktop widths. */
+  const mobileQuoteLinks = [...document.querySelectorAll('a')].filter(link => {
+    const text = (link.textContent || '').trim();
+    const href = link.href || '';
+    return /request-a-quote\.html(?:$|[?#])/i.test(href)
+      || /request (?:an |oem )?(?:quote|pricing|sample)|discuss your project|start your project|product inquiry/i.test(text);
+  });
+  mobileQuoteLinks.forEach(link => {
+    link.dataset.desktopHref = link.href;
+    link.dataset.desktopTarget = link.getAttribute('target') || '';
+    link.dataset.desktopRel = link.getAttribute('rel') || '';
+  });
+  const syncMobileQuoteLinks = () => {
+    mobileQuoteLinks.forEach(link => {
+      if (mobileViewport.matches) {
+        link.href = whatsappUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.dataset.mobileWhatsapp = 'true';
+      } else {
+        link.href = link.dataset.desktopHref;
+        if (link.dataset.desktopTarget) link.target = link.dataset.desktopTarget;
+        else link.removeAttribute('target');
+        if (link.dataset.desktopRel) link.rel = link.dataset.desktopRel;
+        else link.removeAttribute('rel');
+        delete link.dataset.mobileWhatsapp;
+      }
+    });
+  };
+  syncMobileQuoteLinks();
+  mobileViewport.addEventListener('change', syncMobileQuoteLinks);
+
   document.querySelectorAll('img[alt*="WhatsApp" i]').forEach(image => {
     const panel = image.closest('.qr');
     if (!panel || panel.querySelector('.whatsappDirect')) return;
@@ -489,7 +580,7 @@
     link.rel = 'noopener noreferrer';
     link.textContent = 'Open WhatsApp Chat →';
     link.addEventListener('click', () => {
-      track('whatsapp_click', funnelParams({ cta_type: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
+      track('contact_click', funnelParams({ method: 'whatsapp', link_url: whatsappBaseUrl, funnel_step: 'contact_click' }));
     });
     panel.append(link);
   });

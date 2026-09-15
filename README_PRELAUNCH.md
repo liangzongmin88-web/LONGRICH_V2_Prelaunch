@@ -43,3 +43,8 @@
 - Added automated transparent WebP generation for locked product images. Original PNG masters remain unchanged.
 - Added lazy loading, async decoding, priority hints, delayed analytics, and reduced resize layout work.
 - Added accessibility cleanup for contrast, touch targets, and sequential heading hierarchy.
+
+## V6.1 mobile interaction update
+- Product images on mobile now open the same product-detail page as the corresponding View Details button.
+- Product pricing, sample and quote calls to action open a prefilled WhatsApp conversation on mobile.
+- Desktop quote links continue to open the website RFQ form.

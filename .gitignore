@@ -1,3 +1,6 @@
 .vercel
 .env*
 !.env.example
+
+# Local deployment/export bundles. Keep these out of Git permanently.
+LONGRICH_Website_Package_*
