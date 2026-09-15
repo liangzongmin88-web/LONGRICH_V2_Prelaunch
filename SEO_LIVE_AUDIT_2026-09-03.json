@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-09-03T14:17:37.725Z",
+  "base": "https://www.longrichpower.com",
+  "robots": {
+    "http": 200
+  },
+  "sitemap": {
+    "http": 200,
+    "urls": 60
+  },
+  "rows": [
+    {
+      "path": "/travel-adapter-manufacturer.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/travel-adapter-manufacturer.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 14,
+      "incomingLinks": 2,
+      "title": "Travel Adapter Manufacturer & OEM Supplier | LONGRICH",
+      "descriptionLength": 211,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/oem-odm-travel-adapter.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/oem-odm-travel-adapter.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 13,
+      "incomingLinks": 15,
+      "title": "OEM & ODM Travel Adapter Manufacturer | LONGRICH",
+      "descriptionLength": 213,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/universal-travel-adapters.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/universal-travel-adapters.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 15,
+      "incomingLinks": 22,
+      "title": "Universal Travel Adapter Manufacturer | OEM & ODM | LONGRICH",
+      "descriptionLength": 165,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/gan-travel-adapter.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/gan-travel-adapter.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 9,
+      "incomingLinks": 4,
+      "title": "GaN Travel Adapter Manufacturer | 45W & 70W | LONGRICH",
+      "descriptionLength": 156,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/nt011-us.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/nt011-us.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 13,
+      "incomingLinks": 15,
+      "title": "70W GaN Universal Travel Adapter | NT011-US | LONGRICH",
+      "descriptionLength": 123,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/nt009-uk.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/nt009-uk.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 11,
+      "incomingLinks": 6,
+      "title": "20W Universal Travel Adapter | NT009-UK | LONGRICH",
+      "descriptionLength": 121,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/flat-travel-adapter.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/flat-travel-adapter.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 6,
+      "incomingLinks": 6,
+      "title": "Flat Travel Adapter | Compact OEM & ODM Design | LONGRICH",
+      "descriptionLength": 181,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/grounded-travel-adapter.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/grounded-travel-adapter.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 6,
+      "incomingLinks": 3,
+      "title": "Grounded Travel Adapter Explained | LONGRICH",
+      "descriptionLength": 182,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/70w-gan-travel-adapter-full-load-test.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/70w-gan-travel-adapter-full-load-test.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 8,
+      "incomingLinks": 5,
+      "title": "70W GaN Travel Adapter Full-Load Test | LONGRICH Engineering",
+      "descriptionLength": 159,
+      "indexStatus": "GSC URL Inspection required"
+    },
+    {
+      "path": "/engineering-resources.html",
+      "http": 200,
+      "sitemap": true,
+      "canonical": "https://www.longrichpower.com/engineering-resources.html",
+      "selfCanonical": true,
+      "noindex": false,
+      "internalLinks": 20,
+      "incomingLinks": 8,
+      "title": "Travel Adapter Engineering Resources | LONGRICH",
+      "descriptionLength": 169,
+      "indexStatus": "GSC URL Inspection required"
+    }
+  ],
+  "findings": [
+    "/travel-adapter-manufacturer.html: meta description length 211",
+    "/oem-odm-travel-adapter.html: meta description length 213",
+    "/flat-travel-adapter.html: meta description length 181",
+    "/grounded-travel-adapter.html: meta description length 182"
+  ]
+}

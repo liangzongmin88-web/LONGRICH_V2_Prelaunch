@@ -1,7 +1,7 @@
 # LONGRICH GSC Phase 3.1 Weekly Report
 
-**Report date:** 2026-09-13  
-**GSC data freshness:** through approximately 2026-09-10; interface last updated about 5.5 hours before extraction  
+**Report date:** 2026-09-13
+**GSC data freshness:** through approximately 2026-09-10; interface last updated about 5.5 hours before extraction
 **Operating rule:** 7-day freeze remains active for SEO core elements. Technical defects may be fixed.
 
 ## Executive summary

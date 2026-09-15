@@ -1,6 +1,6 @@
 # LONGRICH E-E-A-T and Factory Trust Checklist
 
-**Audit date:** 2026-09-13  
+**Audit date:** 2026-09-13
 **Evidence rule:** only repository-visible evidence is marked present. Certification, capacity, personnel, or customer claims must not be expanded without source documents and business approval.
 
 | Trust area | Status | Current evidence | Gap / next safe action |
