@@ -1,4 +1,5 @@
 .git
+.github
 .gitignore
 .env*
 .vercel
@@ -6,4 +7,7 @@
 *.csv
 SEO_LIVE_AUDIT_*.json
 scripts
+tools
+PRODUCT_IMAGE_LOCK.json
+PERF_IMAGE_OPTIMIZATION_TRIGGER.txt
 LONGRICH_Website_Package_*
